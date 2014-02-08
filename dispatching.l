@@ -20,6 +20,11 @@
    (add-handler (fill '((x) (= @X x)))
       Fun))
 
+(de f= (@X)
+   (fill '((x) (= @X x))))
+
+(de fcmd= (@X)
+   (fill '((X) (= @X (cadr (assoc 'cmd X))))))
 
 
 (add-const-handler3 "sqrt" 'sqrt) #easy as fuck
@@ -27,9 +32,10 @@
 
 
 
-(de handle (msg arg)
-   (mapcar (quote (x) (when ((car x) msg)
-                         ((cdr x) arg)))
+(de handle (Msg)
+   (mapcar (quote (x) (when ((car x) Msg)
+                         (prinl "Matching Handler!")
+                         ((cdr x) Msg) ) )
       *Handlers))
                 
 ## Actions
@@ -44,4 +50,19 @@
 (de handle-action (Action)
    ((cdr (assoc Action *Actions))))  # :)
 
+## Oder halt gleich in der struktur
+
+#*Actions
+(setq *Actions
+   '(("!help" . (quote () "Hilfe"))
+     ("!eo" . (quote () (println "EEEEEEOOOOOO"))) ))
+
+#*Handlers
+(setq *Handlers
+'((`(fcmd= "376") . (quote (msg)
+                  (telnet-send "JOIN #juelich")))
+  (`(fcmd= "PING") . (quote (msg)
+                     (telnet-send (pack "PONG " (cadr (assoc 'msg) ) ))))
+  
+  (`(fcmd= "kramso") . chop) ))    #geilo
       
