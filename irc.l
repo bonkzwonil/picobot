@@ -38,6 +38,7 @@
 
 
 (setq tstmsg ":irc.geekdav.com 376 picobot :End of MOTD command")
+(setq tstmsg3 ":irc.geekdav.com PRIVMSG picobot :Hallo: blabla:::: ;)")
 (setq tstmsg2 "PING :irc.geekdav.com") # auch korrekt
 
 
@@ -48,10 +49,14 @@
             (list 'from (car Words))
             (list 'cmd (cadr Words))
             (list 'to (caddr Words))
-            (list 'arg (caddr (mapcar pack (split (chop Msg) ":")))))
+            (list 'arg  (pack (tail (* -1 (index ":" (cdr (chop Msg)))) (chop Msg))))) ##bad
          (list
             (list 'cmd (car Words))
             (list 'msg (cadr Words))))))
+
+(parse-ircmsg tstmsg)
+(parse-ircmsg tstmsg2)
+(parse-ircmsg tstmsg3)
 
 
 (trace 'handle)
