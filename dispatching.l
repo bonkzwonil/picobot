@@ -48,7 +48,9 @@
 
 
 (de handle-action (Action)
-   ((cdr (assoc Action *Actions))))  # :)
+   (let Result ((cdr (assoc Action *Actions)))  # :)
+      (when Result
+         (telnet-send Result))))
 
 ## Oder halt gleich in der struktur
 
@@ -59,10 +61,16 @@
 
 #*Handlers
 (setq *Handlers
-'((`(fcmd= "376") . (quote (msg)
+'((`(fcmd= "376") . (quote (msg)   ## END Of MOTD Hook (aka Successful Login)
                   (telnet-send "JOIN #juelich")))
-  (`(fcmd= "PING") . (quote (msg)
-                     (telnet-send (pack "PONG " (cadr (assoc 'msg) ) ))))
+  (`(fcmd= "PING") . (quote (Msg)
+                     (telnet-send (pack "PONG " (cadr (assoc 'msg Msg) ) ))))
   
-  (`(fcmd= "kramso") . chop) ))    #geilo
+  (`(fcmd= "PRIVMSG") . privmsghandler) ) )    #geilo
       
+
+
+(de privmsghandler (Msg)
+   (let (Arg (cadr (assoc 'arg Msg)))
+      (when (= "!" (car (chop Arg))) #Action?
+         (handle-action Arg))))

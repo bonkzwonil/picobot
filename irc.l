@@ -25,8 +25,7 @@
                (handler Line) ) ) ) ))
 
 (de irc-handler (Line)
-   (prinl "IRC-> " Line)
-   (println (parse-ircmsg Line))
+   #(prinl "IRC-> " Line)
    (handle (parse-ircmsg Line))
    #(handle-action 
    #Put handler here
@@ -57,7 +56,8 @@
 
 (trace 'handle)
 (trace 'telnet-send)
-            
+(trace 'privmsghandler)
+(trace 'handle-action)            
 
    
    
