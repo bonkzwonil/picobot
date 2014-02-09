@@ -74,3 +74,13 @@
    (let (Arg (cadr (assoc 'arg Msg)))
       (when (= "!" (car (chop Arg))) #Action?
          (handle-action Arg))))
+
+
+
+### Actionfunctions
+
+(de !help () "Help")
+
+(de !sqrt (X) (sqrt X))
+
+(de !sendback (X From))

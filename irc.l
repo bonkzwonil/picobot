@@ -1,21 +1,21 @@
-; Matzes IRC
+#### Matzes IRC
 
-;;Network Print with \r\n and flush
+## Network Print with \r\n and flush
 (de printn (txt)
     (prin txt)
     (wr 13)
     (wr 10)
     (flush))
 
-(setq *IrcSocket NIL)
+(setq *TelnetSocket NIL)
 
 (de telnet-send (Line)
-   (out *IrcSocket
+   (out *TelnetSocket
       (printn Line)))
 
 (de telnet (host port handler initlines)  ##maybe better multithread?
    (let (s (connect host port))
-      (setq *IrcSocket s)
+      (setq *TelnetSocket s)
       (out s
          (mapcar printn initlines))
       (in s
@@ -39,7 +39,7 @@
 
 (setq tstmsg ":irc.geekdav.com 376 picobot :End of MOTD command")
 (setq tstmsg3 ":irc.geekdav.com PRIVMSG picobot :Hallo: blabla:::: ;)")
-(setq tstmsg2 "PING :irc.geekdav.com") # auch korrekt
+(setq tstmsg2 "PING :irc.geekdav.com") # Form2 ohne from: auch korrekt
 
 
 (de parse-ircmsg (Msg)
