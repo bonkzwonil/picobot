@@ -59,7 +59,7 @@
 (parse-ircmsg tstmsg3)
 
 
-(trace 'handle)
+#(trace 'handle)
 (trace 'telnet-send)
 (trace 'privmsghandler)
 (trace 'handle-action)            

@@ -46,27 +46,27 @@
    (push '*Actions
       (cons Action Fun)))
 
+(de parse-action (Msg)
+   (let (Words (split (chop (cadr (assoc 'arg Msg))) " "))
+      (list 
+         (list 'action (pack (car Words)))
+         (list 'args (mapcar 'pack (cdr Words))))))
 
-(de handle-action (Action)
-   (let Result ((cdr (assoc Action *Actions)))  # :)
-      (when Result
-         (telnet-send Result))))
+(de handle-actions (Msg)
+   (let (*Msg Msg  #Start a new Environment with some special Vars bound for reference
+         *From (cadr (assoc 'from Msg))
+         *Arg (cadr (assoc 'arg Msg))
+         *Cmd (cadr (assoc 'cmd Msg))
+         *To (cadr (assoc 'to Msg))
+         ActionMsg (parse-action Msg)
+         Action (cdr (assoc (cadr (assoc 'action ActionMsg)) *Actions)))
+      (when Action
+      
+         (let Result (apply Action 
+                        (cadr (assoc 'args ActionMsg)) )  # :)
+            (when Result
+               (telnet-send Result) ) ) ) ))
 
-## Oder halt gleich in der struktur
-
-#*Actions
-(setq *Actions
-   '(("!help" . (quote () "Hilfe"))
-     ("!eo" . (quote () (println "EEEEEEOOOOOO"))) ))
-
-#*Handlers
-(setq *Handlers
-'((`(fcmd= "376") . (quote (msg)   ## END Of MOTD Hook (aka Successful Login)
-                  (telnet-send "JOIN #juelich")))
-  (`(fcmd= "PING") . (quote (Msg)
-                     (telnet-send (pack "PONG " (cadr (assoc 'msg Msg) ) ))))
-  
-  (`(fcmd= "PRIVMSG") . privmsghandler) ) )    #geilo
       
 
 
@@ -84,3 +84,23 @@
 (de !sqrt (X) (sqrt X))
 
 (de !sendback (X From))
+
+
+
+####### WIRING
+
+## Oder halt gleich in der struktur
+
+#*Actions
+(setq *Actions
+   '(("!help" . (quote () "Hilfe"))
+     ("!eo" . (quote () (println "EEEEEEOOOOOO"))) ))
+
+#*Handlers
+(setq *Handlers
+'((`(fcmd= "376") . (quote (msg)   ## END Of MOTD Hook (aka Successful Login)
+                  (telnet-send "JOIN #juelich")))
+  (`(fcmd= "PING") . (quote (Msg)
+                     (telnet-send (pack "PONG " (cadr (assoc 'msg Msg) ) ))))
+  
+  (`(fcmd= "PRIVMSG") . privmsghandler) ) )    #geilo
