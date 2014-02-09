@@ -49,7 +49,7 @@
 (de parse-action (Msg)
    (let (Words (split (chop (cadr (assoc 'arg Msg))) " "))
       (list 
-         (list 'action (pack (car Words)))
+         (list 'action (pack (cdr (car Words))))
          (list 'args (mapcar 'pack (cdr Words))))))
 
 (de handle-actions (Msg)
@@ -65,7 +65,7 @@
          (let Result (apply Action 
                         (cadr (assoc 'args ActionMsg)) )  # :)
             (when Result
-               (telnet-send Result) ) ) ) ))
+               (telnet-send (pack "PRIVMSG " *To " " ":" Result) ) ) ) )))
 
       
 
@@ -79,12 +79,15 @@
 
 ### Actionfunctions
 
-(de !help () "Help")
+(de !help () "Hier kommt bald die Hilfe...")
 
-(de !sqrt (X) (sqrt X))
+(de !sqrt (X) (sqrt (format X)))
 
-(de !sendback (X From))
-
+(de !env () (pack "Mein Momentanes dynamisches Environment: "
+               " *From " *From
+               " *Arg " *Arg
+               " *Cmd " *Cmd
+               " *To " *To))
 
 
 ####### WIRING
@@ -93,8 +96,10 @@
 
 #*Actions
 (setq *Actions
-   '(("!help" . (quote () "Hilfe"))
-     ("!eo" . (quote () (println "EEEEEEOOOOOO"))) ))
+   '(("!help" . !help)
+     ("!eo" . (quote () (println "EEEEEEOOOOOO")))
+     ("!sqrt" . !sqrt)
+     ("!env" . !env)))
 
 #*Handlers
 (setq *Handlers
