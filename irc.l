@@ -27,7 +27,8 @@
 (de irc-handler (Line)
    #(prinl "IRC-> " Line)
    (handle (parse-ircmsg Line))
-   (handle-actions (parse-ircmsg Line)) 
+   (handle-actions (parse-ircmsg Line))
+   (logging-handler Line)
    #Put handler here
  )   
 
