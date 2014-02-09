@@ -37,6 +37,16 @@
   
   (`(fcmd= "PRIVMSG") . privmsghandler) ) )    #geilo
 
+(de getA (Sym ALst)
+   (cadr (assoc Sym ALst)))
+
+(de getConf (Sym)
+   (getA Sym *BotConfig))
 
 (de main ()
-   (run-irc "localhost" 6667 "picobot" "PicoLisp" "d4nced4nce"))
+   (run-irc 
+      (getConf 'Host)
+      (getConf 'Port)
+      (getConf 'Nick)
+      (getConf 'User)
+      (getConf 'Pass)))
