@@ -45,7 +45,8 @@
    '(("!help" . !help)
      ("!eo" . (quote () (println "EEEEEEOOOOOO")))
      ("!sqrt" . !sqrt)
-     ("!env" . !env)))
+     ("!env" . !env)
+     ("!m4z" . !m4z) ))
 
 #*Handlers
 (setq *Handlers
