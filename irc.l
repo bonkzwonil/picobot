@@ -73,8 +73,7 @@
 
 
 #(trace 'handle)
-(trace 'telnet-send)
-(trace 'privmsghandler)
-(trace 'handle-actions)            
+#(trace 'privmsghandler)
+#(trace 'handle-actions)            
 
    

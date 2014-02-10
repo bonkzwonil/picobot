@@ -50,10 +50,14 @@
          'nsi Nsi
          'description Descr)))
 
-(de newnsi (Nsi Descr)
+(de newnsi @  # Nsi Sentence
+	(if (getnsi (next))
+	"gibts schon"
+	(prog
       (new! '(+Nsi)
-         'nsi Nsi
-         'description Descr))
+         'nsi (arg)
+         'description (glue " " (rest)))
+         (commit))))
 #      (put *DB Nsi Descr) ) )
 
    
