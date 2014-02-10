@@ -32,7 +32,42 @@
          "Komische Ip..."
          (call 'updatens Host Ip)
          (pack "Updated " Host " to " Ip) ) ) )
+
+
+
+#### NSI Database
+(class +Nsi +Entity)
+(rel nsi (+Need +Key +String))
+(rel description (+Need +String))
+
+(pool "nsi.db")   
+
+(de addnsi (Line)
+   (let (Nsi (car (words Line))
+         Descr (pack (trim (chop (pack (mapcar '((X) (pack X " ")) (cdr (words Line))))))))
+      (println Nsi Descr)
+      (new! '(+Nsi)
+         'nsi Nsi
+         'description Descr)))
+
+(de newnsi (Nsi Descr)
+      (new! '(+Nsi)
+         'nsi Nsi
+         'description Descr))
+#      (put *DB Nsi Descr) ) )
+
    
+(de getnsi (Nsi)
+    (get (db 'nsi '+Nsi "AT") 'description))
+
+
+
+(de readnsis (File)
+   (in File
+      (loop
+         (NIL (line T)  'done)
+         (addnsi @))))
+         
 
 ####### WIRING
 
@@ -46,7 +81,9 @@
      ("!eo" . (quote () (println "EEEEEEOOOOOO")))
      ("!sqrt" . !sqrt)
      ("!env" . !env)
-     ("!m4z" . !m4z) ))
+     ("!m4z" . !m4z)
+     ("!whatis" . getnsi) 
+     ("!regnsi" . newnsi)))
 
 #*Handlers
 (setq *Handlers
