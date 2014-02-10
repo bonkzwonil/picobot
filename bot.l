@@ -58,7 +58,7 @@
 
    
 (de getnsi (Nsi)
-    (get (db 'nsi '+Nsi "AT") 'description))
+    (get (db 'nsi '+Nsi Nsi) 'description))
 
 
 
