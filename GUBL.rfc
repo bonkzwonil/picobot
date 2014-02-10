@@ -1,0 +1,42 @@
+RFC 9  GUBL -- Grand Unified Bot Language
+
+For defining #juelich bots in a language independent language.
+
+
+
+
+SYNTAX
+GUBL is uses S-Expression Syntax for ease of use and parsing
+
+ACTIONS
+An Action is a channel line which begins with !
+Example: 
+!echo Hallo
+
+ACTIONHANDLERS
+Each action can get a Handler bound to it.
+A Handler is a function which is called with the arguments of the Action
+So: "!echo Hallo" calls the echo Handler with one argument "Hallo"
+
+(action !echo (arg) arg) is the full implementation of the echo handler
+
+LIBRARY
+call
+upper
+lower
+length
+words
+map
+=,<,>,!=
+'
+nth
+set
+
+(action !lenOfFirstWord (arg) (length (nth 0 (words arg))
+
+
+IMPLEMENTATIONS    
+Reference Implementation in Common Lisp
+Implementation in PicoLisp
+Implementation in Perl
+

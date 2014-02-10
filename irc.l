@@ -11,7 +11,7 @@
 
 (de telnet-send (Txt)
     (if (and Txt (lst? Txt)) # Not NIL
-	(mapcar sendtelnet Txt)
+	(mapcar telnet-send Txt)
 	(out *TelnetSocket (printn Txt))))
 
 

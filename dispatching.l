@@ -36,7 +36,7 @@
    (mapcar (quote (x) (when ((car x) Msg)
                          (prinl "Matching Handler!")
                          ((cdr x) Msg) ) )
-      *Handlers))
+      *Handlers ) )    
                 
 ## Actions
 
