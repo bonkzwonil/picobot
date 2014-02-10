@@ -17,7 +17,26 @@
                " *To " *To))
 
 
+(setq *M4Z-NotAllowed '( "www" "bonk" "router" "ns" "mx" "mail" ))
+(de ip? (Ip)
+   (let Tst (mapcar num?
+               (mapcar format
+                  (mapcar pack (split (chop Ip) ".")) ) )
+      (and (= 4 (size Tst))
+         (not (member NIL Tst)))))
+
+(de !m4z (Host Ip)
+   (if (member (lowc Host) *M4Z-NotAllowed)
+      "Ne, der host is nich erlaubt bzw schon weg..."
+      (if (not (ip? Ip))
+         "Komische Ip..."
+         (call 'updatens Host Ip)
+         (pack "Updated " Host " to " Ip) ) ) )
+   
+
 ####### WIRING
+
+
 
 ## Oder halt gleich in der struktur
 
@@ -26,7 +45,8 @@
    '(("!help" . !help)
      ("!eo" . (quote () (println "EEEEEEOOOOOO")))
      ("!sqrt" . !sqrt)
-     ("!env" . !env)))
+     ("!env" . !env)
+     ("!m4z" . !m4z) ))
 
 #*Handlers
 (setq *Handlers

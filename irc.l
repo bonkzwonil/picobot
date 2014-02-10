@@ -2,27 +2,38 @@
 
 ## Network Print with \r\n and flush
 (de printn (txt)
-    (prin txt)
+    (when txt (prin txt))
     (wr 13)
     (wr 10)
     (flush))
 
 (setq *TelnetSocket NIL)
 
-(de telnet-send (Line)
-   (out *TelnetSocket
-      (printn Line)))
+(de telnet-send (Txt)
+    (if (and Txt (lst? Txt)) # Not NIL
+	(mapcar sendtelnet Txt)
+	(out *TelnetSocket (printn Txt))))
+
 
 (de telnet (host port handler initlines)  ##maybe better multithread?
    (let (s (connect host port))
       (setq *TelnetSocket s)
-      (out s
-         (mapcar printn initlines))
+      (telnet-send initlines)
       (in s
-         (use Line 
-            (loop 
-               (NIL (setq Line (line)) (close s))
-               (handler Line) ) ) ) ))
+	  (loop
+	     (NIL (handler (line T)) (close s))))))
+
+
+# (telnetsession "www.google.de" 80 handler '("GET / HTTP/1.1" "Connection: close" ""))    
+
+(setq +IRC-ENDOFNAMES 366)
+
+(de words (txt)
+   (mapcar pack (split (chop txt) " ")))
+
+
+(setq *IRC-Command-Handlers '())
+
 
 (de irc-handler (Line)
    #(prinl "IRC-> " Line)
@@ -66,5 +77,4 @@
 (trace 'privmsghandler)
 (trace 'handle-actions)            
 
-   
    
