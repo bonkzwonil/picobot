@@ -33,9 +33,10 @@
  )   
 
 (de run-irc (Host Port Nick User Pass)
+	(loop
    (telnet Host Port irc-handler (list (pack "PASS " Pass)
                                        (pack "NICK " Nick)
-                                       (pack "USER " Nick " localhost.localdomain " User " :" Nick))))
+                                       (pack "USER " Nick " localhost.localdomain " User " :" Nick)))))
 
 
 (setq tstmsg ":irc.geekdav.com 376 picobot :End of MOTD command")
