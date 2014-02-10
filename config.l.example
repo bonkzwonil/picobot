@@ -1,0 +1,8 @@
+# Bot Config
+
+(setq *BotConfig
+   '((Nick "picobot")
+     (User "PicoLisp")
+     (Pass "secret")
+     (Host "localhost")
+     (Port 6667)))
