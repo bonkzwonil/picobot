@@ -16,6 +16,8 @@
                " *Cmd " *Cmd
                " *To " *To))
 
+(de !bkw () (pack "Die letzte Bewegung in der BKW war: " 
+               (stamp (info "/export/storage/motiondetected"))))
 
 (setq *M4Z-NotAllowed '( "www" "bonk" "router" "ns" "mx" "mail" ))
 (de ip? (Ip)
@@ -86,8 +88,9 @@
      ("!sqrt" . !sqrt)
      ("!env" . !env)
      ("!m4z" . !m4z)
+     ("!bkw" . !bkw)
      ("!whatis" . getnsi) 
-     ("!regnsi" . newnsi)))
+     ("!regnsi" . newnsi) ) )
 
 #*Handlers
 (setq *Handlers
