@@ -16,8 +16,11 @@
                " *Cmd " *Cmd
                " *To " *To))
 
-(de !bkw () (pack "Die letzte Bewegung in der BKW war: " 
-               (stamp (tail 1 (info "/export/storage/motiondetected")))))
+(de !bkw () (let Info 
+               (info "/export/storage/motiondetected")
+	(pack "Die letzte Bewegung in der BKW war: "
+		(stamp (cadr Info) (+ 3600 (cddr Info))))))
+		 
 
 (setq *M4Z-NotAllowed '( "www" "bonk" "router" "ns" "mx" "mail" ))
 (de ip? (Ip)
