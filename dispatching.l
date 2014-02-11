@@ -4,20 +4,9 @@
    (push '*Handlers
       (cons Pred Fun)))
 
-(add-handler '((x) (= "quadrat" x))
-             '((x) (* x x)) )
 
 (de add-const-handler (X Fun)
-   (add-handler (list '(y) (list '= X 'y))  ##how to do this nicer?
-      Fun))
-
-(de add-const-handler2 (X Fun)
-   (bind (list (cons '@X X))
-      (add-handler (fill '((x) (= @X x)))
-         Fun ) ) )
-
-(de add-const-handler3 (@X Fun)
-   (add-handler (fill '((x) (= @X x)))
+   (add-handler (fcmd= X)
       Fun))
 
 (de f= (@X)
@@ -27,14 +16,9 @@
    (fill '((X) (= @X (cadr (assoc 'cmd X))))))
 
 
-(add-const-handler3 "sqrt" 'sqrt) #easy as fuck
-
-
-
 
 (de handle (Msg)
    (mapcar (quote (x) (when ((car x) Msg)
-                         (prinl "Matching Handler!")
                          ((cdr x) Msg) ) )
       *Handlers ) )    
                 
