@@ -17,7 +17,7 @@
                " *To " *To))
 
 (de !bkw () (pack "Die letzte Bewegung in der BKW war: " 
-               (stamp (info "/export/storage/motiondetected"))))
+               (stamp (tail 1 (info "/export/storage/motiondetected")))))
 
 (setq *M4Z-NotAllowed '( "www" "bonk" "router" "ns" "mx" "mail" ))
 (de ip? (Ip)
