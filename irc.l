@@ -28,6 +28,8 @@
 
 (setq +IRC-ENDOFNAMES 366)
 
+
+
 (de words (txt)
    (mapcar pack (split (chop txt) " ")))
 

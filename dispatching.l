@@ -36,20 +36,33 @@
          (list 'action (pack (cdr (car Words))))
          (list 'args (mapcar 'pack (cdr Words))))))
 
+
+(setq *MinActionIntvl 1) # 1sec
+(setq *LastActionTime 0)
+
+
+(de minTimePassed? ()
+   (> (- (time) *LastActionTime)
+      *MinActionIntvl))
+
 (de handle-actions (Msg)
-   (let (*Msg Msg  #Start a new Environment with some special Vars bound for reference
-         *From (cadr (assoc 'from Msg))
-         *Arg (cadr (assoc 'arg Msg))
-         *Cmd (cadr (assoc 'cmd Msg))
-         *To (cadr (assoc 'to Msg))
-         ActionMsg (parse-action Msg)
-         Action (cdr (assoc (cadr (assoc 'action ActionMsg)) *Actions)))
-      (when Action
+   (if (minTimePassed?)
+      (let (*Msg Msg  #Start a new Environment with some special Vars bound for reference
+            *From (cadr (assoc 'from Msg))
+            *Arg (cadr (assoc 'arg Msg))
+            *Cmd (cadr (assoc 'cmd Msg))
+            *To (cadr (assoc 'to Msg))
+            ActionMsg (parse-action Msg)
+            Action (cdr (assoc (cadr (assoc 'action ActionMsg)) *Actions)) )
+         (setq *LastActionTime (time))
+         (when Action
       
-         (let Result (apply Action 
-                        (cadr (assoc 'args ActionMsg)) )  # :)
-            (when Result
-               (telnet-send (pack "PRIVMSG " *To " " ":" Result) ) ) ) )))
+            (let Result (apply Action 
+                           (cadr (assoc 'args ActionMsg)) )  # :)
+               (when Result
+                  (telnet-send (pack "PRIVMSG " *To " " ":" Result))))))
+      #else
+      (println "Action is calling too fast... Ignore this one")))
 
       
 
