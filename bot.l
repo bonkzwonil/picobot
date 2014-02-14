@@ -16,10 +16,14 @@
                " *Cmd " *Cmd
                " *To " *To))
 
-(de !bkw () (let Info 
-               (info "/export/storage/motiondetected")
+(de !bkw () (let (Info 
+                  (info "/export/storage/motiondetected")
+                  File
+                  (pack (car (reverse (split (chop (in "test.txt" (line T))) "/")))))
+
 	(pack "Die letzte Bewegung in der BKW war: "
-		(stamp (cadr Info) (+ 3600 (cddr Info))))))
+		(stamp (cadr Info) (+ 3600 (cddr Info))) 
+                " https://geekdav.com/BKW/" File)))
 		 
 
 (setq *M4Z-NotAllowed '( "www" "bonk" "router" "ns" "mx" "mail" ))
