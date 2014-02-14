@@ -43,13 +43,32 @@
          (pack "Updated " Host " to " Ip) ) ) )
 
 
+## Bauch
+(de load-bauch-data (File)
+   (in File 
+         (read)))
+      
+
+
+(pool "picobot.db")   
+      
+(class +Geek +Entity)
+(rel nick (+Key +Need +String))
+(rel measures (+List +Joint) geek (+Bauch))
+
+(class +Bauch +Entity)
+(rel ts (+Need +String +Ref))
+(rel cm (+Need +Ref +Number))
+(rel geek (+Need +Joint) measures (+Geek)) 
+
+(de bauch-add (Nick Cm Stamp)
+   (new! '(+Bauch) 'ts (or Stamp (stamp)) 'cm Cm 'geek (db 'nick '+Geek Nick)))
+
 
 #### NSI Database
 (class +Nsi +Entity)
 (rel nsi (+Need +Key +String))
 (rel description (+Need +String))
-
-(pool "nsi.db")   
 
 (de addnsi (Line)
    (let (Nsi (car (words Line))
