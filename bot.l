@@ -70,8 +70,17 @@
       (mapcar (quote (X)
                  (bauch-add Geek (getf ':VALUE X) (getf ':DATE X)))
          (cadr Lst) ) ) )
-         
+   
 
+(de nick (Nick)
+   (lowc (pack (car (split (chop Nick) "_")))))
+(de nsi (Nick)
+   (pack (cadr (split (chop Nick) "_"))))
+
+
+(de !bauch (Cmd)
+   (bauch-add 
+      (strip-nsi *From) Cmd))
 
       
 
@@ -136,7 +145,8 @@
      ("!m4z" . !m4z)
      ("!bkw" . !bkw)
      ("!whatis" . getnsi) 
-     ("!regnsi" . newnsi) ) )
+     ("!regnsi" . newnsi)
+     ("!bauch" . !bauch) ))
 
 #*Handlers
 (setq *Handlers
