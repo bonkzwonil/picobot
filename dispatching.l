@@ -41,11 +41,16 @@
 (setq *LastActionTime 0)
 
 
+(de action? (Msg)
+	(= "!" (car (chop (cadr (assoc 'arg Msg))))))
+
+
 (de minTimePassed? ()
    (> (- (time) *LastActionTime)
       *MinActionIntvl))
 
 (de handle-actions (Msg)
+ (when (action? Msg)
    (if (minTimePassed?)
       (let (*Msg Msg  #Start a new Environment with some special Vars bound for reference
             *From (cadr (assoc 'from Msg))
@@ -62,7 +67,7 @@
                (when Result
                   (telnet-send (pack "PRIVMSG " *To " " ":" Result))))))
       #else
-      (println "Action is calling too fast... Ignore this one")))
+      (println "Action is calling too fast... Ignore this one: " Msg))))
 
       
 
