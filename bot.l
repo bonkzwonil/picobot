@@ -65,6 +65,14 @@
    (new! '(+Bauch) 'ts (or Stamp (stamp)) 'cm Cm 'geek (db 'nick '+Geek Nick)))
 
 
+# I like PLISTS
+(de getf (X Place)
+   (if Place
+      (if (= X (car Place))
+         (cadr Place)
+         (getf X (cdr Place)))
+      NIL))
+
 #### NSI Database
 (class +Nsi +Entity)
 (rel nsi (+Need +Key +String))
