@@ -19,7 +19,7 @@
 (de !bkw () (let (Info 
                   (info "/export/storage/motiondetected")
                   File
-                  (pack (car (reverse (split (chop (in "test.txt" (line T))) "/")))))
+                  (pack (car (reverse (split (chop (in "/export/storage/motiondetected" (line T))) "/")))))
 
 	(pack "Die letzte Bewegung in der BKW war: "
 		(stamp (cadr Info) (+ 3600 (cddr Info))) 
