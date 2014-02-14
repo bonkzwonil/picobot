@@ -64,6 +64,16 @@
 (de bauch-add (Nick Cm Stamp)
    (new! '(+Bauch) 'ts (or Stamp (stamp)) 'cm Cm 'geek (db 'nick '+Geek Nick)))
 
+(de bauch-convert (Lst)
+   (let (Geek (car Lst))
+      (new! '(+Geek) 'nick Geek)
+      (mapcar (quote (X)
+                 (bauch-add Geek (getf ':VALUE X) (getf ':DATE X)))
+         (cadr Lst) ) ) )
+         
+
+
+      
 
 # I like PLISTS
 (de getf (X Place)
@@ -72,6 +82,8 @@
          (cadr Place)
          (getf X (cdr Place)))
       NIL))
+
+
 
 #### NSI Database
 (class +Nsi +Entity)
