@@ -1,8 +1,45 @@
+
+
+(pool "picobot.db")   
+
+## Logging objects
+(class +Log +Entity)
+(rel from (+Ref +Need +String))
+(rel ts (+Need +Ref +String))
+(rel cmd (+Need +Ref +String))
+(rel to (+Ref +String))
+(rel arg (+Idx +String))
+(rel raw (+Idx +String))
+
+(class +Word +Entity)
+(rel value (+Key +String))
+(rel log (+List +Ref +Link) NIL (+Log))
+
+(de dblog (Line)
+   (let Msg (parse-ircmsg Line)
+      (let @Log 
+         (new T '(+Log)
+            'from (getA 'from Msg)
+            'ts (stamp)
+            'cmd (getA 'cmd Msg)
+            'to (getA 'to Msg)
+            'arg (getA 'arg Msg)
+            'raw Line )
+         (mapcar (quote (X) 
+                    (new T '(+Word)
+                       'value X
+                       'log @Log))
+            (mapcar pack (split 
+                     (chop (getA 'arg Msg))
+                     " " )))))
+   (commit))
+
 ## Logging handler
 
-(de logging-handler (Msg)
+(de logging-handler (Line)
    (out "+log.txt"
-      (prinl Msg)))
+      (prinl Line))
+   (dblog Line))
 
 ### Actionfunctions
 
@@ -43,14 +80,12 @@
          (pack "Updated " Host " to " Ip) ) ) )
 
 
+
 ## Bauch
 (de load-bauch-data (File)
    (in File 
          (read)))
       
-
-
-(pool "picobot.db")   
       
 (class +Geek +Entity)
 (rel nick (+Key +Need +String))
@@ -170,3 +205,4 @@
       (getConf 'Nick)
       (getConf 'User)
       (getConf 'Pass)))
+(0)

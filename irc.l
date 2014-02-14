@@ -45,7 +45,7 @@
    #Put handler here
  )   
 
-(de run-irc (Host Port Nick User Pass)
+o(de run-irc (Host Port Nick User Pass)
 	(loop
    (telnet Host Port irc-handler (list (pack "PASS " Pass)
                                        (pack "NICK " Nick)
