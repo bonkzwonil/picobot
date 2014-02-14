@@ -42,7 +42,7 @@
 
 
 (de action? (Msg)
-	(= "!" (car (chop (cadr (assoc 'arg Msg))))))
+	(= "!" (cadr (chop (cadr (assoc 'arg Msg))))))
 
 
 (de minTimePassed? ()
