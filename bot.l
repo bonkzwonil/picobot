@@ -38,7 +38,7 @@
 
 (de logging-handler (Line)
    (out "+log.txt"
-      (prinl Line))
+      (prinl (stamp) " " Line))
    (dblog Line))
 
 ### Actionfunctions
