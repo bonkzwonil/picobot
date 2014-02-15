@@ -12,7 +12,7 @@
 (rel raw (+Idx +String))
 
 (class +Word +Entity)
-(rel value (+Key +String))
+(rel value (+Key +String +Need))
 (rel log (+List +Ref +Link) NIL (+Log))
 
 (de dblog (Line)
@@ -157,6 +157,13 @@
     (get (db 'nsi '+Nsi Nsi) 'description))
 
 
+(de nick-hook (Msg)
+   (let Nsi (nsi (getA 'to Msg))
+      (when (not (getnsi Nsi))
+         (telnet-send "PRIVMSG #juelich :" 
+            (pack (nick (getA 'to Msg))
+               ": Was ist bitte '" Nsi "'? Bitte !regnsi. Dankesehr." ) ) ) ))
+         
 
 (de readnsis (File)
    (in File
