@@ -1,14 +1,18 @@
+(dbs
+   (1)
+   (1 +Geek +Bauch +Nsi)
+   (2 (+Geek measures) (+Bauch geek)))
+   
 
-
-(pool "picobot.db")   
+(pool "picobot.db" *Dbs)   
 
 ## Logging objects
 (class +Log +Entity)
-(rel from (+Ref +Need +String))
-(rel ts (+Need +Ref +String))
-(rel cmd (+Need +Ref +String))
-(rel to (+Ref +String))
-(rel arg (+Idx +String))
+(rel from (+Idx +Need +String))
+(rel ts (+Need +Idx +String))
+(rel cmd (+Need +Idx +String))
+(rel to (+Idx +String))
+(rel arg (+Sn +Idx +String))
 (rel raw (+Idx +String))
 
 (class +Word +Entity)
@@ -91,8 +95,8 @@
 (rel measures (+List +Joint) geek (+Bauch))
 
 (class +Bauch +Entity)
-(rel ts (+Need +String +Ref))
-(rel cm (+Need +Ref +Number))
+(rel ts (+Need +String))
+(rel cm (+Need +Number))
 (rel geek (+Need +Joint) measures (+Geek)) 
 
 (de bauch-add (Nick Cm Stamp)
