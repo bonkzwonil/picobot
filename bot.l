@@ -1,15 +1,19 @@
 (dbs
    (1)
    (1 +Geek +Bauch +Nsi)
-   (2 (+Geek measures) (+Bauch geek)))
+   (2 (+Geek measures) (+Bauch geek))
+   (2 +Log)
+   (3 (+Log raw arg))
+   (1 +Word)
+   (2 (+Word log)))
    
 
-(pool "picobot.db" *Dbs)   
+(pool "picobotdb/" *Dbs)   
 
 ## Logging objects
 (class +Log +Entity)
 (rel from (+Idx +Need +String))
-(rel ts (+Need +Idx +String))
+(rel ts (+Need +String))
 (rel cmd (+Need +Idx +String))
 (rel to (+Idx +String))
 (rel arg (+Sn +Idx +String))
