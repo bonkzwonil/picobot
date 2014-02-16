@@ -52,10 +52,6 @@ o(de run-irc (Host Port Nick User Pass)
                                        (pack "USER " Nick " localhost.localdomain " User " :" Nick)))))
 
 
-(setq tstmsg ":irc.geekdav.com 376 picobot :End of MOTD command")
-(setq tstmsg3 ":irc.geekdav.com PRIVMSG picobot :Hallo: blabla:::: ;)")
-(setq tstmsg2 "PING :irc.geekdav.com") # Form2 ohne from: auch korrekt
-(setq tstmsg4 ":bonk_FA!~bonk@sandkasten.mausland.de NICK :bonk_KAR")
 
 (de parse-ircmsg (Msg)
    (let Words (words Msg)
@@ -69,9 +65,6 @@ o(de run-irc (Host Port Nick User Pass)
             (list 'cmd (car Words))
             (list 'msg (cadr Words))))))
 
-(parse-ircmsg tstmsg)
-(parse-ircmsg tstmsg2)
-(parse-ircmsg tstmsg3)
 
 
 #(trace 'handle)
