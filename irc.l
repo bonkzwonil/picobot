@@ -39,13 +39,14 @@
 
 (de irc-handler (Line)
    #(prinl "IRC-> " Line)
-   (handle (parse-ircmsg Line))
-   (handle-actions (parse-ircmsg Line))
-   (logging-handler Line)
-   #Put handler here
+   (let (Msg (parse-ircmsg Line))
+      (handle Msg)
+      (handle-actions Msg)
+      (logging-handler Line))
+   #Put first level handlers here  // not needed for bots
  )   
 
-o(de run-irc (Host Port Nick User Pass)
+(de run-irc (Host Port Nick User Pass)
 	(loop
    (telnet Host Port irc-handler (list (pack "PASS " Pass)
                                        (pack "NICK " Nick)
@@ -66,6 +67,8 @@ o(de run-irc (Host Port Nick User Pass)
             (list 'msg (cadr Words))))))
 
 
+(de logging-handler (Line)
+   (prinl "Basic Logging Handler (redifine logging-handler to use own) :" Line))
 
 #(trace 'handle)
 #(trace 'privmsghandler)

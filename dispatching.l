@@ -4,7 +4,6 @@
    (push '*Handlers
       (cons Pred Fun)))
 
-
 (de add-const-handler (X Fun)
    (add-handler (fcmd= X)
       Fun))
@@ -16,7 +15,6 @@
    (fill '((X) (= @X (cadr (assoc 'cmd X))))))
 
 
-
 (de handle (Msg)
    (mapcar (quote (x) (when ((car x) Msg)
                          ((cdr x) Msg) ) )
@@ -26,23 +24,28 @@
 
 #Oh glory Assoc Lists -- here we are again
 
+(de getA (Sym ALst)
+   (cadr (assoc Sym ALst)))
+
+
 (de add-action (Action Fun)
    (push '*Actions
       (cons Action Fun)))
 
+(de action? (Msg)
+	(= "!" (car (chop (getA 'arg Msg)))))
+
 (de parse-action (Msg)
-   (let (Words (split (chop (cadr (assoc 'arg Msg))) " "))
-      (list 
-         (list 'action (pack (cdr (car Words))))
-         (list 'args (mapcar 'pack (cdr Words))))))
+   (if (action? Msg)
+      (let (Words (words (getA 'arg Msg)))
+         (list 
+            (list 'action (car Words))
+            (list 'args (mapcar 'pack (cdr Words)))))
+      NIL))
 
 
 (setq *MinActionIntvl 1) # 1sec
 (setq *LastActionTime 0)
-
-
-(de action? (Msg)
-	(= "!" (cadr (chop (cadr (assoc 'arg Msg))))))
 
 
 (de minTimePassed? ()
@@ -53,27 +56,23 @@
  (when (action? Msg)
    (if (minTimePassed?)
       (let (*Msg Msg  #Start a new Environment with some special Vars bound for reference
-            *From (cadr (assoc 'from Msg))
-            *Arg (cadr (assoc 'arg Msg))
-            *Cmd (cadr (assoc 'cmd Msg))
-            *To (cadr (assoc 'to Msg))
+            *From (getA 'from Msg)
+            *Arg (getA 'arg Msg)
+            *Cmd (getA 'cmd Msg)
+            *To (getA 'to Msg)
             ActionMsg (parse-action Msg)
             Action (cdr (assoc (cadr (assoc 'action ActionMsg)) *Actions)) )
          (setq *LastActionTime (time))
          (when Action
       
             (let Result (apply Action 
-                           (cadr (assoc 'args ActionMsg)) )  # :)
+                           (getA 'args ActionMsg))   # :)
                (when Result
-                  (telnet-send (pack "PRIVMSG " *To " " ":" Result))))))
+                  (telnet-send (pack "PRIVMSG " (if (= (getConf 'Nick) *To) *From *To) " :" Result)) ) ) ) )
       #else
-      (println "Action is calling too fast... Ignore this one: " Msg))))
+      (println "Action is calling too fast... Ignore this one: " Msg) ) ) )
+
 
       
 
-
-(de privmsghandler (Msg)
-   (let (Arg (cadr (assoc 'arg Msg)))
-      (when (= "!" (car (chop Arg))) #Action?
-         (handle-action Arg))))
 

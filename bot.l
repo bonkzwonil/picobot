@@ -199,9 +199,6 @@
   
   (`(fcmd= "PRIVMSG") . privmsghandler) ) )    #geilo
 
-(de getA (Sym ALst)
-   (cadr (assoc Sym ALst)))
-
 (de getConf (Sym)
    (getA Sym *BotConfig))
 
