@@ -25,10 +25,9 @@
             'to (getA 'to Msg)
             'arg (getA 'arg Msg)
             'raw Line )
-         (mapcar (quote (X) 
-                    (new T '(+Word)
-                       'value X
-                       'log @Log))
+         (mapcar (quote (X)
+                    (obj ((+Word) value X)
+                       'log @Log ) )
             (mapcar pack (split 
                      (chop (getA 'arg Msg))
                      " " )))))
@@ -38,12 +37,12 @@
 
 (de logging-handler (Line)
    (out "+log.txt"
-      (prinl (stamp) " " Line))
-   (dblog Line))
+      (prinl (stamp) " " Line)))
+   #(dblog Line))
 
 ### Actionfunctions
 
-(de !help () "Hier kommt bald die Hilfe...")
+(de !help () (pack "Actions: " (glue ", " (mapcar car *Actions))))
 
 (de !sqrt (X) (sqrt (format X)))
 
