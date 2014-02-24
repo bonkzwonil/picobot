@@ -21,3 +21,15 @@
 (mapcar getl
    (collect 'nsi '+Nsi))
 
+
+(de picobotdump ()
+   (out "dbdump.l" 
+      (prinl "# PICOBOT DATABASE DUMP")
+      (prinl "# " (stamp))
+      (prinl "# " "Geekbauch")
+      (dump (db nick +Geek @@))
+      (prinl "# " "Nsis")
+      (dump (db nsi +Nsi @@))
+      (prinl "# ENDOFDUMP")))
+      
+      

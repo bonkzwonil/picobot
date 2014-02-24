@@ -1,23 +1,12 @@
-(dbs
-   (1)
-   (1 +Geek +Bauch +Nsi)
-   (2 (+Geek measures) (+Bauch geek))
-   (2 +Log)
-   (3 (+Log raw arg))
-   (1 +Word)
-   (2 (+Word log)))
-   
-
-(pool "picobotdb/" *Dbs)   
 
 ## Logging objects
 (class +Log +Entity)
 (rel from (+Idx +Need +String))
-(rel ts (+Need +String))
+(rel ts (+Need +Idx +String))
 (rel cmd (+Need +Idx +String))
 (rel to (+Idx +String))
 (rel arg (+Sn +Idx +String))
-(rel raw (+Idx +String))
+(rel raw (+String))
 
 (class +Word +Entity)
 (rel value (+Key +String +Need))
@@ -99,8 +88,8 @@
 (rel measures (+List +Joint) geek (+Bauch))
 
 (class +Bauch +Entity)
-(rel ts (+Need +String))
-(rel cm (+Need +Number))
+(rel ts (+Need +String +Ref))
+(rel cm (+Need +Number +Ref))
 (rel geek (+Need +Joint) measures (+Geek)) 
 
 (de bauch-add (Nick Cm Stamp)
@@ -203,11 +192,25 @@
                   (telnet-send "JOIN #juelich")))
   (`(fcmd= "PING") . (quote (Msg)
                      (telnet-send (pack "PONG " (cadr (assoc 'msg Msg) ) ))))
+  (`(fcmd= "NICK") . nick-hook)
   
   (`(fcmd= "PRIVMSG") . privmsghandler) ) )    #geilo
 
 (de getConf (Sym)
    (getA Sym *BotConfig))
+
+(dbs
+   (1)
+   (1 +Geek +Bauch +Nsi)
+   (2 (+Geek measures) (+Bauch geek))
+   (2 +Log)
+   (3 (+Log raw arg from ts))
+   (1 +Word)
+   (2 (+Word log)))
+   
+
+(pool "picobotdb/" *Dbs)   
+
 
 (de main ()
    (run-irc 
