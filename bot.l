@@ -111,8 +111,16 @@
 
 (de !bauch (Cmd)
    (bauch-add 
-      (strip-nsi *From) Cmd))
+      (nick *From) Cmd))
 
+(de !lastbauch (Nick)
+   (let Bauch
+      (last 
+         (get (db 'nick '+Geek (nick Nick))
+            'measures ) )
+      (if Bauch
+         (pack (nick Nick) " hatte am zuletzt " (get Bauch 'cm) " cm Bauch (" (get Bauch 'ts) ")" )
+         "habe noch keine Bauchwerte von diesem Geek")))
       
 
 # I like PLISTS
