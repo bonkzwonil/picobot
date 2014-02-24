@@ -1,12 +1,15 @@
 
 ## Logging objects
 (class +Log +Entity)
-(rel from (+Idx +Need +String))
+(rel nick (+Idx +Need +String))
+(rel nsi (+Ref +String))
 (rel ts (+Need +Idx +String))
-(rel cmd (+Need +Idx +String))
+(rel cmd (+Need +Symbol +Ref))
 (rel to (+Idx +String))
 (rel arg (+Sn +Idx +String))
 (rel raw (+String))
+
+
 
 (class +Word +Entity)
 (rel value (+Key +String +Need))
@@ -16,26 +19,32 @@
    (let Msg (parse-ircmsg Line)
       (let @Log 
          (new T '(+Log)
-            'from (getA 'from Msg)
+            'nick (nick (getA 'from Msg))
+            'nsi (nsi (getA 'from Msg))
             'ts (stamp)
-            'cmd (getA 'cmd Msg)
+            'cmd (intern (getA 'cmd Msg))
             'to (getA 'to Msg)
             'arg (getA 'arg Msg)
             'raw Line )
-         (mapcar (quote (X)
-                    (obj ((+Word) value X)
-                       'log @Log ) )
+         (mapcar (quote (@X)
+                    (addword @X @Log))
             (mapcar pack (split 
-                     (chop (getA 'arg Msg))
-                     " " )))))
-   (commit))
+                            (chop (getA 'arg Msg))
+                            " " ) ) ) ) ) )
+
+(de addword (Word Log)
+   (let (Obj (or 
+                (db 'value '+Word Word)
+                (new T '(+Word)
+                   'value Word)))
+      (put> Obj 'log Log)))  ###maybe getting too long? -- we will see
 
 ## Logging handler
 
 (de logging-handler (Line)
    (out "+log.txt"
-      (prinl (stamp) " " Line)))
-   #(dblog Line))
+      (prinl (stamp) " " Line))
+   (dblog Line) )
 
 ### Actionfunctions
 
@@ -212,7 +221,8 @@
    (1 +Geek +Bauch +Nsi)
    (2 (+Geek measures) (+Bauch geek))
    (2 +Log)
-   (3 (+Log raw arg from ts))
+   (3 (+Log nick nsi arg cmd ts))
+   (2 (+Log raw))
    (1 +Word)
    (2 (+Word log)))
    
@@ -227,4 +237,5 @@
       (getConf 'Nick)
       (getConf 'User)
       (getConf 'Pass)))
+(0)
 (0)
