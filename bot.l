@@ -179,7 +179,10 @@
 
 (de nick-hook (Msg)
    (let Nsi (nsi (getA 'to Msg))
-      (when (not (getnsi Nsi))
+      (when (and 
+               (> (length Nsi) 1) 
+               (< (length Nsi) 5)
+               (not (getnsi Nsi)) )
          (telnet-send 
             (pack "PRIVMSG #juelich :" (nick (getA 'to Msg))
                ": Was ist bitte '" Nsi "'? Bitte !regnsi. Dankesehr." ) ) ) ))
