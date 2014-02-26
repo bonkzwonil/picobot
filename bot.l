@@ -18,7 +18,7 @@
 (de dblog (Line)
    (let Msg (parse-ircmsg Line)
       (let @Log 
-         (new T '(+Log)
+         (new! '(+Log)
             'nick (nick (getA 'from Msg))
             'nsi (nsi (getA 'from Msg))
             'ts (stamp)
@@ -42,7 +42,7 @@
 (de addword (Word Log)
    (let (Obj (or 
                 (db 'value '+Word Word)
-                (new T '(+Word)
+                (new! '(+Word)
                    'value Word)))
       (put> Obj 'log Log)))  ###maybe getting too long? -- we will see
 
