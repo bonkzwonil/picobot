@@ -27,10 +27,17 @@
             'arg (getA 'arg Msg)
             'raw Line )
          (mapcar (quote (@X)
-                    (addword @X @Log))
+                    (addword (wordify @X) @Log))
             (mapcar pack (split 
                             (chop (getA 'arg Msg))
                             " " ) ) ) ) ) )
+
+(de wordify (Word Junklist)
+   (let Junklist (or Junklist '(" " "," "." "!" ";"))
+      (pack 
+         (filter (quote (X)
+                    (not (member X Junklist) ))
+            (chop Word) ) ) ) )
 
 (de addword (Word Log)
    (let (Obj (or 
