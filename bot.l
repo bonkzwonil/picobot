@@ -49,9 +49,11 @@
 ## Logging handler
 
 (de logging-handler (Line)
-   (out "+log.txt"
-      (prinl (stamp) " " Line))
-   (dblog Line) )
+   # we dont want to log debug, to give the harddisks a chance to standby
+   (unless (ping? Line)
+      (out "+log.txt"
+         (prinl (stamp) " " Line) )
+      (dblog Line) ))
 
 ### Actionfunctions
 

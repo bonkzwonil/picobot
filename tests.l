@@ -13,7 +13,7 @@
 
 ## Actions
 (use *Actions
-   (test '((action "sqrt") (args ("9")))
+   (test '((action "!sqrt") (args ("9")))
       (parse-action '((arg "!sqrt 9"))))
    (add-action "!sqrt" 'sqrt)
    (test '(("!sqrt" . sqrt)) *Actions))
@@ -31,6 +31,9 @@
 (test 
    '((cmd "PING") (msg ":irc.geekdav.com"))
    (parse-ircmsg tstmsg2))
+
+(test
+   T (ping? tstmsg2))
 
 (parse-ircmsg tstmsg2)
 (parse-ircmsg tstmsg3)

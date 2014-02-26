@@ -34,6 +34,10 @@
    (mapcar pack (split (chop txt) " ")))
 
 
+(de ping? (Line)
+   (= "PING" (car (words Line))))
+
+
 (setq *IRC-Command-Handlers '())
 
 
