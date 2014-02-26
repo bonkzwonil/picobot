@@ -246,7 +246,7 @@
 '((`(fcmd= "376") . (quote (msg)   ## END Of MOTD Hook (aka Successful Login)
                   (telnet-send "JOIN #juelich")))
   (`(fcmd= "PING") . (quote (Msg)
-                     (telnet-send (pack "PONG " (cadr (assoc 'msg Msg) ) ))))
+                     (telnet-send (pack "PONG " (getA 'msg Msg) ) )))
   (`(fcmd= "NICK") . nick-hook)))
   
 (de getConf (Sym)
