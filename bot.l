@@ -163,13 +163,17 @@
          'description Descr)))
 
 (de newnsi @  # Nsi Sentence
-	(if (getnsi (next))
+   (if (getnsi (next))
 	"gibts schon"
-	(prog
-      (new! '(+Nsi)
-         'nsi (arg)
-         'description (glue " " (rest)))
-         (commit))))
+	(if (or (> (length (arg)) 4)
+               (< (length (arg)) 1))
+           "ist das denn überhaupt ein geeigneter NSI?"
+           (prog
+              (new! '(+Nsi)
+                 'nsi (arg)
+                 'description (glue " " (rest)) )
+              (commit) 
+              "Danke" ) ) ))
 #      (put *DB Nsi Descr) ) )
 
    
@@ -195,6 +199,23 @@
          (addnsi @))))
          
 
+##PILOG
+ #(? (select (@Nsi) ((nsi +Nsi)) (part "AT" @Nsi nsi)) (show @Nsi))
+(de !suchnsi (Nsi)
+   (let Nsis
+      (solve (quote 
+                @Val Nsi
+                (select (@Nsi) 
+                   ((nsi +Nsi)
+                    (description +Nsi) )
+                   (part @Val @Nsi description) ) ) 
+         @Nsi )
+      (if Nsis
+         (pack "Da hätte ich zum Beispiel im Angebot: "
+            (glue "," (mapcar (quote (X) (get X 'nsi))
+                         Nsis ) ) )
+         "Da weiß ich leider noch nix drüber....")))
+
 ####### WIRING
 
 
@@ -211,7 +232,8 @@
      ("!bkw" . !bkw)
      ("!whatis" . getnsi) 
      ("!regnsi" . newnsi)
-     ("!bauch" . !bauch) ))
+     ("!suchnsi" . !suchnsi)
+     ("!bauch" . !bauch) ) )
 
 #*Handlers
 (setq *Handlers

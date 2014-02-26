@@ -52,6 +52,10 @@
    (> (- (time) *LastActionTime)
       *MinActionIntvl))
 
+(de ircsend (Line)
+   (telnet-send 
+      (pack (head 500 (chop Line)))))
+
 (de handle-actions (Msg)
  (when (action? Msg)
    (if (minTimePassed?)
@@ -68,7 +72,7 @@
             (let Result (apply Action 
                            (getA 'args ActionMsg))   # :)
                (when Result
-                  (telnet-send (pack "PRIVMSG " (if (= (getConf 'Nick) *To) *From *To) " :" Result)) ) ) ) )
+                  (ircsend (pack "PRIVMSG " (if (= (getConf 'Nick) *To) *From *To) " :" Result)) ) ) ) )
       #else
       (println "Action is calling too fast... Ignore this one: " Msg) ) ) )
 
