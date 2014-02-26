@@ -131,13 +131,16 @@
 
 (de !lastbauch (Nick)
    (let Bauch
-      (last 
-         (get (db 'nick '+Geek (nick Nick))
-            'measures ) )
+      (last (getbauch Nick))
+         
       (if Bauch
-         (pack (nick Nick) " hatte am zuletzt " (get Bauch 'cm) " cm Bauch (" (get Bauch 'ts) ")" )
+         (pack (nick Nick) " hatte zuletzt " (get Bauch 'cm) " cm Bauch (" (get Bauch 'ts) ")" )
          "habe noch keine Bauchwerte von diesem Geek")))
       
+(de getbauch (Nick)
+   (get (db 'nick '+Geek (nick Nick))
+            'measures ) )
+               
 
 # I like PLISTS
 (de getf (X Place)
@@ -233,7 +236,8 @@
      ("!whatis" . getnsi) 
      ("!regnsi" . newnsi)
      ("!suchnsi" . !suchnsi)
-     ("!bauch" . !bauch) ) )
+     ("!bauch" . !bauch) 
+     ("!lastbauch" . !lastbauch) ))
 
 #*Handlers
 (setq *Handlers
