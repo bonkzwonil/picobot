@@ -173,8 +173,8 @@
 (de nick-hook (Msg)
    (let Nsi (nsi (getA 'to Msg))
       (when (not (getnsi Nsi))
-         (telnet-send "PRIVMSG #juelich :" 
-            (pack (nick (getA 'to Msg))
+         (telnet-send 
+            (pack "PRIVMSG #juelich :" (nick (getA 'to Msg))
                ": Was ist bitte '" Nsi "'? Bitte !regnsi. Dankesehr." ) ) ) ))
          
 
@@ -209,10 +209,8 @@
                   (telnet-send "JOIN #juelich")))
   (`(fcmd= "PING") . (quote (Msg)
                      (telnet-send (pack "PONG " (cadr (assoc 'msg Msg) ) ))))
-  (`(fcmd= "NICK") . nick-hook)
+  (`(fcmd= "NICK") . nick-hook)))
   
-  (`(fcmd= "PRIVMSG") . privmsghandler) ) )    #geilo
-
 (de getConf (Sym)
    (getA Sym *BotConfig))
 
@@ -229,6 +227,20 @@
 
 (pool "picobotdb/" *Dbs)   
 
+(de traceall ()
+   (trace 'logging-handler)                                
+   (trace 'run-irc)                 
+   (trace 'telnet-send)                           
+   (trace 'intern)                        
+   (trace 'new)                   
+   (trace 'nick)                    
+   (trace 'getA)                                                         
+   (trace 'db))
+
+(trace 'irc-handler)
+
+(de error-handler (Err)
+   (telnet-send (pack "PRIVMSG #juelich :" Err)))
 
 (de main ()
    (run-irc 
@@ -237,5 +249,3 @@
       (getConf 'Nick)
       (getConf 'User)
       (getConf 'Pass)))
-(0)
-(0)

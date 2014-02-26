@@ -39,18 +39,27 @@
 
 (de irc-handler (Line)
    #(prinl "IRC-> " Line)
-   (let (Msg (parse-ircmsg Line))
-      (handle Msg)
-      (handle-actions Msg)
-      (logging-handler Line))
-   #Put first level handlers here  // not needed for bots
- )   
+   (let (result
+         (catch '("")
+            (let (Msg (parse-ircmsg Line))
+               (handle Msg)
+               (handle-actions Msg)
+               (logging-handler Line) )
+            T ## we want to continue handling
+            #Put first level handlers here  // not needed for bots
+            ) )
+      (unless (= T result)
+         (error-handler result) ) )
+   T)
+
+(de error-handler (Err)
+   (prinl "ERROR: " Err))
 
 (de run-irc (Host Port Nick User Pass)
-	(loop
-   (telnet Host Port irc-handler (list (pack "PASS " Pass)
+   (loop
+      (telnet Host Port irc-handler (list (pack "PASS " Pass)
                                        (pack "NICK " Nick)
-                                       (pack "USER " Nick " localhost.localdomain " User " :" Nick)))))
+                                       (pack "USER " Nick " localhost.localdomain " User " :" Nick) ) ) ) )
 
 
 

@@ -1,1 +1,1 @@
-/home/lisp/sw/picoLisp/bin/pil dispatching.l irc.l config.l bot.l -main +
+pil dispatching.l irc.l config.l bot.l -traceall -main +
