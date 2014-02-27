@@ -26,11 +26,12 @@
             'to (getA 'to Msg)
             'arg (getA 'arg Msg)
             'raw Line )
-         (mapcar (quote (@X)
-                    (addword (wordify @X) @Log))
-            (mapcar pack (split 
-                            (chop (getA 'arg Msg))
-                            " " ) ) ) ) ) )
+         (when (= 'PRIVMSG (intern (getA 'cmd Msg)))  # save words
+            (mapcar (quote (@X)
+                       (addword (wordify @X) @Log) )
+               (mapcar pack (split 
+                               (chop (getA 'arg Msg))
+                               " " ) ) ) ) ) ))
 
 (de wordify (Word Junklist)
    (let Junklist (or Junklist '(" " "," "." "!" ";"))
