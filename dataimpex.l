@@ -3,6 +3,22 @@
 # Export all Logs and Words as plists
 
 
+(de picobotdump ()
+   (out "dbdump.l" 
+      (prinl "# PICOBOT DATABASE DUMP")
+      (prinl "# " (stamp))
+      (prinl "# " "Geekbauch")
+      (dump (db nick +Geek @@))
+      (prinl "# " "Nsis")
+      (dump (db nsi +Nsi @@))
+      (prinl "# ENDOFDUMP")))
+      
+
+
+ 
+     
+(de quatsch ()
+
 
 (mapcar getl
    (collect 'value '+Word))
@@ -21,15 +37,4 @@
 (mapcar getl
    (collect 'nsi '+Nsi))
 
-
-(de picobotdump ()
-   (out "dbdump.l" 
-      (prinl "# PICOBOT DATABASE DUMP")
-      (prinl "# " (stamp))
-      (prinl "# " "Geekbauch")
-      (dump (db nick +Geek @@))
-      (prinl "# " "Nsis")
-      (dump (db nsi +Nsi @@))
-      (prinl "# ENDOFDUMP")))
-      
-      
+)

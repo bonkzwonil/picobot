@@ -1,6 +1,7 @@
 
 ## Logging objects
 (class +Log +Entity)
+(rel aid (+Key +Need +Number)) #auto inc
 (rel nick (+Idx +Need +String))
 (rel nsi (+Ref +String))
 (rel ts (+Need +Idx +String))
@@ -19,6 +20,7 @@
    (let Msg (parse-ircmsg Line)
       (let @Log 
          (new! '(+Log)
+            'aid (genKey 'aid '+Log)
             'nick (nick (getA 'from Msg))
             'nsi (nsi (getA 'from Msg))
             'ts (stamp)
@@ -34,7 +36,7 @@
                                " " ) ) ) ) ) ))
 
 (de wordify (Word Junklist)
-   (let Junklist (or Junklist '(" " "," "." "!" ";"))
+   (let Junklist (or Junklist '(" " "," "." "!" ";" ":" "?"))
       (pack 
          (filter (quote (X)
                     (not (member X Junklist) ))
