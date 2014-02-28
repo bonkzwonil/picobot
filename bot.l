@@ -222,6 +222,27 @@
                          Nsis ) ) )
          "Da weiß ich leider noch nix drüber....")))
 
+
+
+(de wievielwords? ()
+   (let Count 0
+      (pilog (quote
+               (select (@Word)
+                  ((value +Word))
+                  (part "" @Word value)))
+         (inc 'Count) ) 
+      Count))
+
+(de wieviellogs? ()
+   (let Count 0
+      (pilog (quote
+               (select (@Log)
+                  ((ts +Log))
+                  (part "" @Log ts)))
+         (inc 'Count) ) 
+      Count))
+                  
+
 ####### WIRING
 
 
@@ -247,7 +268,8 @@
 '((`(fcmd= "376") . (quote (msg)   ## END Of MOTD Hook (aka Successful Login)
                   (telnet-send "JOIN #juelich")))
   (`(fcmd= "PING") . (quote (Msg)
-                     (telnet-send (pack "PONG " (getA 'msg Msg) ) )))
+                        (de *Run (-300000 0 (prog (println 'exit) (bye))))
+                        (telnet-send (pack "PONG " (getA 'msg Msg))) ) )
   (`(fcmd= "NICK") . nick-hook)))
   
 (de getConf (Sym)
