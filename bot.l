@@ -134,7 +134,7 @@
 
 (de !lastbauch (Nick)
    (let Bauch
-      (last (getbauch Nick))
+      (last (by (quote (X) (get X 'ts)) sort (getbauch Nick)))
          
       (if Bauch
          (pack (nick Nick) " hatte zuletzt " (get Bauch 'cm) " cm Bauch (" (get Bauch 'ts) ")" )
