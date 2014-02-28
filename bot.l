@@ -140,6 +140,21 @@
          (pack (nick Nick) " hatte zuletzt " (get Bauch 'cm) " cm Bauch (" (get Bauch 'ts) ")" )
          "habe noch keine Bauchwerte von diesem Geek")))
       
+(de !dick (Nick)
+   (let Bauch
+      (maxi (quote (X) (get X 'cm)) (getbauch (nick Nick)))
+      (if Bauch
+         (pack (nick Nick) " war mal " (get Bauch 'cm) " dick! (" (get Bauch 'ts)")")
+         "habe noch keine Bauchwerte von diesem Geek" ) ) )
+         
+(de !duenn (Nick)
+   (let Bauch
+      (mini (quote (X) (get X 'cm)) (getbauch (nick Nick)))
+      (if Bauch
+         (pack (nick Nick) " war mal " (get Bauch 'cm) " dünn! (" (get Bauch 'ts)")")
+         "habe noch keine Bauchwerte von diesem Geek" ) ) )
+         
+
 (de getbauch (Nick)
    (get (db 'nick '+Geek (nick Nick))
             'measures ) )
@@ -261,7 +276,9 @@
      ("!regnsi" . newnsi)
      ("!suchnsi" . !suchnsi)
      ("!bauch" . !bauch) 
-     ("!lastbauch" . !lastbauch) ))
+     ("!lastbauch" . !lastbauch)
+     ("!dick" . !dick)
+     ("!dünn" . !duenn) ))
 
 #*Handlers
 (setq *Handlers
