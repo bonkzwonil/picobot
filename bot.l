@@ -3,8 +3,10 @@
 (class +Log +Entity)
 (rel aid (+Key +Need +Number)) #auto inc
 (rel nick (+Idx +Need +String))
-(rel nsi (+Ref +String))
+(rel nsi (+Ref +String))b
 (rel ts (+Need +Idx +String))
+(rel date (+Need +Ref +Number))
+(rel time (+Need +Ref +Number))
 (rel cmd (+Need +Symbol +Ref))
 (rel to (+Idx +String))
 (rel arg (+Sn +Idx +String))
@@ -16,14 +18,15 @@
 (rel value (+Key +String +Need))
 (rel log (+List +Ref +Link) NIL (+Log))
 
-(de dblog (Line)
+(de dblog (Line Stamp)
    (let Msg (parse-ircmsg Line)
       (let @Log 
          (new! '(+Log)
             'aid (genKey 'aid '+Log)
             'nick (nick (getA 'from Msg))
             'nsi (nsi (getA 'from Msg))
-            'ts (stamp)
+            'date (or (car Stamp) (date))
+            'time (or (cdr Stamp) (time))
             'cmd (intern (getA 'cmd Msg))
             'to (getA 'to Msg)
             'arg (getA 'arg Msg)
@@ -311,7 +314,7 @@
    (1 +Geek +Bauch +Nsi)
    (2 (+Geek measures) (+Bauch geek))
    (2 +Log)
-   (3 (+Log nick nsi arg cmd ts))
+   (3 (+Log nick nsi arg cmd date time aid))
    (2 (+Log raw))
    (1 +Word)
    (2 (+Word log)))
@@ -333,6 +336,17 @@
 
 (de error-handler (Err)
    (telnet-send (pack "PRIVMSG #juelich :" Err)))
+
+(de logimport (File)
+   (in File
+      (loop
+         (NIL (line T) 'ende)
+         (let 
+            (Line @
+             Stamp (cons
+                     (strDat (car (words Line)))
+                     ($tim (cadr (words Line)))))
+         (dblog Line Stamp) ) ) ) )
 
 (de main ()
    (run-irc 
