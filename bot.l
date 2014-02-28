@@ -286,7 +286,8 @@
      ("!bauch" . !bauch) 
      ("!lastbauch" . !lastbauch)
      ("!dick" . !dick)
-     ("!dünn" . !duenn) ))
+     ("!dünn" . !duenn)
+     ("!deltabauch" . !deltabauch) ))
 
 #*Handlers
 (setq *Handlers
