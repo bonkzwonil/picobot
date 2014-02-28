@@ -158,7 +158,10 @@
 
 (de !deltabauch (Nick)
    (let Bpw (bauchprowoche Nick)
-      (pack (nick Nick) " wird zur zeit jede Woche " (abs Bpw) (if (> Bpw 0) "mm fetter!" "mm magerer!"))))
+      (if Bpw
+         (pack (nick Nick) " wird zur zeit jede Woche " (abs Bpw) (if (> Bpw 0) "mm fetter!" "mm magerer!"))
+         "habe noch keine Bauchwerte von diesem Geek" ) ) )
+         
          
          
    
