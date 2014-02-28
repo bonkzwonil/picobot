@@ -133,27 +133,35 @@
       (nick *From) Cmd))
 
 (de !lastbauch (Nick)
-   (let Bauch
-      (last (by (quote (X) (get X 'ts)) sort (getbauch Nick)))
-         
+   (let Bauch (last (by (quote (X) (get X 'ts)) sort (getbauch Nick)))
       (if Bauch
          (pack (nick Nick) " hatte zuletzt " (get Bauch 'cm) " cm Bauch (" (get Bauch 'ts) ")" )
          "habe noch keine Bauchwerte von diesem Geek")))
       
 (de !dick (Nick)
-   (let Bauch
-      (maxi (quote (X) (get X 'cm)) (getbauch (nick Nick)))
+   (let Bauch (maxi (quote (X) (get X 'cm)) (getbauch (nick Nick)))
       (if Bauch
          (pack (nick Nick) " war mal " (get Bauch 'cm) " dick! (" (get Bauch 'ts)")")
          "habe noch keine Bauchwerte von diesem Geek" ) ) )
          
 (de !duenn (Nick)
-   (let Bauch
-      (mini (quote (X) (get X 'cm)) (getbauch (nick Nick)))
+   (let Bauch (mini (quote (X) (get X 'cm)) (getbauch (nick Nick)))
       (if Bauch
          (pack (nick Nick) " war mal " (get Bauch 'cm) " dünn! (" (get Bauch 'ts)")")
          "habe noch keine Bauchwerte von diesem Geek" ) ) )
+
+(de bauchprowoche (Nick)
+   (let BauchList (reverse (by (quote (X) (get X 'ts)) sort (getbauch (nick Nick))))
+      (let NewestTwo (list (car BauchList) (cadr BauchList)) 
+         (/ (* 10 (apply - (mapcar (quote (X) (get X 'cm)) NewestTwo)))
+            (/ (apply - (mapcar (quote (X) (strDat (car (words (get X 'ts))))) NewestTwo)) 7)))))
+
+(de !deltabauch (Nick)
+   (let Bpw (bauchprowoche Nick)
+      (pack (nick Nick) " wird zur zeit jede Woche " (abs Bpw) (if (> Bpw 0) "mm fetter!" " magerer!"))))
          
+         
+   
 
 (de getbauch (Nick)
    (get (db 'nick '+Geek (nick Nick))
