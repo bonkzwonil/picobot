@@ -1,5 +1,7 @@
 #### Matzes IRC
 
+(setq *TelnetTimeOut 300)
+
 ## Network Print with \r\n and flush
 (de printn (txt)
     (when txt (prin txt))
@@ -21,7 +23,7 @@
       (telnet-send initlines)
       (in s
 	  (loop
-	     (NIL (handler (line T)) (close s))))))
+	     (NIL (handler (abort *TelnetTimeOut (line T))) (close s))))))
 
 
 # (telnetsession "www.google.de" 80 handler '("GET / HTTP/1.1" "Connection: close" ""))    
@@ -43,7 +45,8 @@
 
 (de irc-handler (Line)
    #(prinl "IRC-> " Line)
-   (let (result
+   (if Line
+      (let (result
          (catch '("")
             (let (Msg (parse-ircmsg Line))
                (handle Msg)
@@ -52,9 +55,11 @@
             T ## we want to continue handling
             #Put first level handlers here  // not needed for bots
             ) )
-      (unless (= T result)
-         (error-handler result) ) )
-   T)
+         (unless (= T result)
+            (error-handler result) )
+         T)
+      NIL))
+      
 
 (de error-handler (Err)
    (prinl "ERROR: " Err))
