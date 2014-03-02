@@ -326,13 +326,15 @@
      ("!dünn" . !duenn)
      ("!deltabauch" . !deltabauch) ))
 
+(de pong (Msg)
+   (telnet-send (pack "PONG " (getA 'msg Msg))) )
+
 #*Handlers
 (setq *Handlers
 '((`(fcmd= "376") . (quote (msg)   ## END Of MOTD Hook (aka Successful Login)
                   (telnet-send "JOIN #juelich")))
-  (`(fcmd= "PING") . (quote (Msg)
-                        (de *Run (-300000 0 (prog (println 'exit) (bye))))
-                        (telnet-send (pack "PONG " (getA 'msg Msg))) ) )
+  (`(fcmd= "PING") . pong)
+   
   (`(fcmd= "NICK") . nick-hook)))
   
 (de getConf (Sym)
