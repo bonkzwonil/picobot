@@ -3,7 +3,7 @@
 (class +Log +Entity)
 (rel aid (+Key +Need +Number)) #auto inc
 (rel nick (+Idx +Need +String))
-(rel nsi (+Ref +String))b
+(rel nsi (+Ref +String))
 (rel ts (+Need +Idx +String))
 (rel date (+Need +Ref +Number))
 (rel time (+Need +Ref +Number))
@@ -125,7 +125,9 @@
       (mapcar (quote (X)
                  (bauch-add Geek (getf ':VALUE X) (getf ':DATE X)))
          (cadr Lst) ) ) )
-   
+ 
+#quote
+
 
 (de nick (Nick)
    (lowc (pack (car (split (chop Nick) "_")))))
@@ -272,7 +274,34 @@
                   (part "" @Log ts)))
          (inc 'Count) ) 
       Count))
-                  
+
+(de lieblingsnsis (Geek)
+   (mapcar (quote (X)
+              (get X 'nsi))
+      (collect 'nick '+Log Geek)))
+
+                           
+
+(de analyze (Krams)
+   (if (getnsi Krams)
+      (list 'nsi @)
+      (if (> (max (length (collect 'nick '+Log Krams))
+             (length (collect 'nick '+Log (pack ":" Krams))))
+             100)
+         (list 'geek )
+         (if (db 'value '+Word Krams)
+            (list 'wort (get @ 'log))
+            NIL))))
+
+(de !analyze (Krams)
+   (let Res (analyze Krams)
+      (if Res
+         (pack "'" Krams "' ist vmtl. ein " (car Res) ". "
+            (cond 
+               ((= 'wort (car Res)) (pack "Es kommt vor in " (length (cadr Res)) " Channelzeilen."))
+               ((= 'nsi (car Res)) (pack "Er bedeutet soviel wie: " (cadr Res)))
+               (T "")))
+         "So etwas kenne ich gar nicht...")))
 
 ####### WIRING
 
@@ -346,7 +375,9 @@
              Stamp (cons
                      (strDat (car (words Line)))
                      ($tim (cadr (words Line)))))
-         (dblog Line Stamp) ) ) ) )
+         (dblog 
+            (glue " " (cddr (words Line))) 
+            Stamp ) ) ) ) )
 
 (de main ()
    (run-irc 

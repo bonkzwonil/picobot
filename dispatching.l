@@ -44,12 +44,12 @@
       NIL))
 
 
-(setq *MinActionIntvl 1) # 1sec
-(setq *LastActionTime 0)
+(setq *MinActionIntvl 1000000) # 1sec
+(setq *LastActionTime (usec))
 
 
 (de minTimePassed? ()
-   (> (- (time) *LastActionTime)
+   (> (- (usec) *LastActionTime)
       *MinActionIntvl))
 
 (de ircsend (Line)
@@ -66,7 +66,7 @@
             *To (getA 'to Msg)
             ActionMsg (parse-action Msg)
             Action (cdr (assoc (cadr (assoc 'action ActionMsg)) *Actions)) )
-         (setq *LastActionTime (time))
+         (setq *LastActionTime (usec))
          (when Action
       
             (let Result (apply Action 
