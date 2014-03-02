@@ -324,7 +324,17 @@
      ("!lastbauch" . !lastbauch)
      ("!dick" . !dick)
      ("!dünn" . !duenn)
-     ("!deltabauch" . !deltabauch) ))
+     ("wieviel?" . (quote ()
+                      (pack "Ich kenne " 
+                         (count (tree 'nsi '+Nsi))
+                         " nsis, habe bisher "
+                         (count (tree 'aid '+Log))
+                         " Channelzeilen belauscht und weiß "
+                         (apply + (mapcar (quote (X) (length (get X 'measures))) (collect 'nick '+Geek)))
+                            " Bauchwerte von "
+                         (count (tree 'nick '+Geek))
+                         " verschiedenen Geeks." )))
+     ("!Deltabauch" . !deltabauch) ) )
 
 (de pong (Msg)
    (telnet-send (pack "PONG " (getA 'msg Msg))) )
