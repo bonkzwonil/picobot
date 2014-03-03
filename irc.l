@@ -76,7 +76,7 @@
    (let Words (words Msg)
       (if (= ":" (car (chop (car Words))))
          (list
-            (list 'from (car Words))
+            (list 'from (pack (cdr (chop (car Words)))))
             (list 'cmd (cadr Words))
             (list 'to (caddr Words))
             (list 'arg  (pack (cdr (chop (glue " " (cdddr Words)))))))

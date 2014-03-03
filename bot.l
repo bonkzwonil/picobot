@@ -18,6 +18,8 @@
 (rel value (+Key +String +Need))
 (rel log (+List +Ref +Link) NIL (+Log))
 
+
+
 (de dblog (Line Stamp)
    (let Msg (parse-ircmsg Line)
       (let @Log 
@@ -28,7 +30,7 @@
             'date (or (car Stamp) (date))
             'time (or (cdr Stamp) (time))
             'cmd (intern (getA 'cmd Msg))
-            'to (getA 'to Msg)
+            'to (wordify (getA 'to Msg))
             'arg (getA 'arg Msg)
             'raw Line )
          (when (= 'PRIVMSG (intern (getA 'cmd Msg)))  # save words
@@ -130,9 +132,9 @@
 
 
 (de nick (Nick)
-   (lowc (pack (car (split (chop Nick) "_")))))
+   (lowc (pack (car (split (car (split (chop Nick) "!")) "_")))) )
 (de nsi (Nick)
-   (pack (cadr (split (chop Nick) "_"))))
+   (pack (cadr (split (car (split (chop Nick) "!")) "_"))))
 
 
 (de !bauch (Cmd)
@@ -276,10 +278,22 @@
       Count))
 
 (de lieblingsnsis (Geek)
-   (mapcar (quote (X)
-              (get X 'nsi))
-      (collect 'nick '+Log Geek)))
+   (reverse
+      (by car sort
+         (rle
+            (sort
+               (mapcar (quote (X)
+                          (get X 'nsi) )
+                  (collect 'nick '+Log (nick Geek)) ) ) ) )))
 
+(de rle (Lst)
+      (make
+         (for (Lst Lst Lst)
+            (let (N 1  C)
+               (while (= (setq C (pop 'Lst)) (car Lst))
+                  (inc 'N) )
+               (link (cons N C) ) ) ) ))
+ 
                            
 
 (de analyze (Krams)
