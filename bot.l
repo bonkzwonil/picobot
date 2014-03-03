@@ -348,7 +348,8 @@
      ("!lastbauch" . !lastbauch)
      ("!dick" . !dick)
      ("!dünn" . !duenn)
-     ("wieviel?" . (quote ()
+     ("!analyze" . !analyze)
+     ("!wieviel?" . (quote ()
                       (pack "Ich kenne " 
                          (count (tree 'nsi '+Nsi))
                          " nsis, habe bisher "
@@ -358,7 +359,7 @@
                             " Bauchwerte von "
                          (count (tree 'nick '+Geek))
                          " verschiedenen Geeks." )))
-     ("!Deltabauch" . !deltabauch) ) )
+     ("!deltabauch" . !deltabauch) ) )
 
 (de pong (Msg)
    (telnet-send (pack "PONG " (getA 'msg Msg))) )
