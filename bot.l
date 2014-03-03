@@ -38,7 +38,7 @@
                        (addword (wordify @X) @Log) )
                (mapcar pack (split 
                                (chop (getA 'arg Msg))
-                               " " ) ) ) ) ) ))
+                               " " ) ) ) ) ) ) )
 
 (de wordify (Word Junklist)
    (let Junklist (or Junklist '(" " "," "." "!" ";" ":" "?"))
@@ -281,10 +281,11 @@
    (reverse
       (by car sort
          (rle
-            (sort
-               (mapcar (quote (X)
-                          (get X 'nsi) )
-                  (collect 'nick '+Log (nick Geek)) ) ) ) )))
+            (filter (quote (X) X)
+               (sort
+                  (mapcar (quote (X)
+                             (get X 'nsi) )
+                     (collect 'nick '+Log (nick Geek)) ) ) ) ) ) ))
 
 (de rle (Lst)
       (make
@@ -302,10 +303,13 @@
       (if (> (max (length (collect 'nick '+Log Krams))
              (length (collect 'nick '+Log (pack ":" Krams))))
              100)
-         (list 'geek )
+         (let (nsis (lieblingsnsis (nick Krams)))
+            (if (> (length nsis) 3)
+               (list 'geek nsis)
+               (list 'bot) ))
          (if (db 'value '+Word Krams)
             (list 'wort (get @ 'log))
-            NIL))))
+            NIL ) ) ) )
 
 (de !analyze (Krams)
    (let Res (analyze Krams)
@@ -314,7 +318,13 @@
             (cond 
                ((= 'wort (car Res)) (pack "Es kommt vor in " (length (cadr Res)) " Channelzeilen."))
                ((= 'nsi (car Res)) (pack "Er bedeutet soviel wie: " (cadr Res)))
-               (T "")))
+               ((= 'geek (car Res)) (let nsis (cadr Res)
+                                       (pack "Am liebsten macht " (nick Krams) " "
+                                          (cadar nsis) " (" (caar nsis) "x) und " 
+                                          (cadar (cdr nsis)) " (" (caar (cdr nsis)) "x)...")))
+                      
+                                       
+               (T "") ) )
          "So etwas kenne ich gar nicht...")))
 
 ####### WIRING
