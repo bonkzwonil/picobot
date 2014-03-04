@@ -74,7 +74,8 @@
    (unless (ping? Line)
       (out "+log.txt"
          (prinl (stamp) " " Line) )
-      (dblog Line) ))
+      (dblog Line) 
+      (commit) ))
 
 ### Actionfunctions
 
@@ -298,7 +299,10 @@
                (sort
                   (mapcar (quote (X)
                              (get X 'nsi) )
-                     (collect 'nick '+Log (nick Geek)) ) ) ) ) ) ))
+                     (filter (quote (X)
+                                (= 'NICK
+                                   (get X 'cmd)))
+                        (collect 'nick '+Log (nick Geek)) ) ) ) ) ) ) ))
 
 (de rle (Lst)
       (make
@@ -367,6 +371,9 @@
      ("!heap" . heap)
      ("!free" . (quote () (heap T)))
      ("!gc" . gc)
+     ("!lieblingsnsis" . (quote (Geek)
+                          (pack Geek " macht am liebsten "
+                             (glue "," (mapcar cadr (head 30 (lieblingsnsis Geek)))))))
      ("!wieviel?" . (quote ()
                       (pack "Ich kenne " 
                          (count (tree 'nsi '+Nsi))
