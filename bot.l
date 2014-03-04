@@ -287,11 +287,11 @@
       (pilog (quote
                (select (@Log)
                   ((ts +Log))
-                  (part "" @Log ts)))
+                  (part "" @Log nick)))
          (inc 'Count) ) 
       Count))
 
-(de lieblingsnsis (Geek)
+(de lieblingsnsis (Geek) #straight forward, performance??
    (reverse
       (by car sort
          (rle
@@ -303,6 +303,20 @@
                                 (= 'NICK
                                    (get X 'cmd)))
                         (collect 'nick '+Log (nick Geek)) ) ) ) ) ) ) ))
+
+(de lieblingsnsisPIL (Geek)
+   (let Lst NIL
+      (pilog (quote @Geek Geek
+                @Cmd (intern "NICK")
+               
+                (select (@Log)
+                   ((nick +Log @Geek))
+                   (same @Cmd @Log cmd)
+                   (same @Geek @Log nick) )
+                )
+         (push 'Lst (get @Log 'nsi)))
+      Lst ) )
+                
 
 (de rle (Lst)
       (make
@@ -493,7 +507,5 @@
 (de b2logimport (File)
    (let Tkns (mapcar format (split (car (split (chop File) ".")) "-"))
       (let Date (date (cadr Tkns) (caddr Tkns) (cadddr Tkns))
-         (bench (logimport File Date) 
-            (commit)
-            (prune) ) ) ))
+         (bench (logimport File Date)))))
 (0)
