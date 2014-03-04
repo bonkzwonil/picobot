@@ -346,6 +346,23 @@
                (T "") ) )
          "So etwas kenne ich gar nicht...")))
 
+(de cpuinfo ()
+   (let Lines NIL
+      (in "/proc/cpuinfo"
+         (loop 
+            (NIL (line T) 'done)
+            (let (Tokens (mapcar pack (mapcar trim (split (chop @) ":"))))
+               (push 'Lines Tokens))))
+      Lines))
+
+
+(de !hw ()
+   (filter (quote (X) (member (car X) '("system type" "machine" "cpu model" "BogoMIPS"))) 
+      (cpuinfo)))
+            
+      
+      
+
 ####### WIRING
 
 (de !lieblingsnsis (Geek)
