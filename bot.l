@@ -323,7 +323,7 @@
                (list 'geek nsis)
                (list 'bot) ))
          (if (db 'value '+Word Krams)
-            (list 'wort (get @ 'log))
+            (list 'wort (collect 'word '+WordLog @))
             NIL ) ) ) )
 
 (de !analyze (Krams)
