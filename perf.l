@@ -16,7 +16,7 @@
 (for N 10
    (bench (for I 100000
              (new (db: +Test) '(+Test)
-                'aid (+ (* 10000 N) I)
+                'aid (+ (* 100000 N) I)
                 'key (pack "KEY: " (+ (* 10000 N) I))
                 'payload (pack "Hallo " N " und " I) ) )
       (commit)

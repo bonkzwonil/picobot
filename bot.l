@@ -3,20 +3,25 @@
 ### ok: Ref is ok. Idx is WAHNSINNIG SLOW. Sn is slow. Key is ok
 (class +Log +Entity)
 (rel aid (+Key +Need +Number)) #auto inc
-(rel nick (+Idx +Need +String))
+(rel nick (+Ref +Need +String))
 (rel nsi (+Ref +String))
 (rel date (+Need +Ref +Number))
 (rel time (+Need +Ref +Number))
 (rel cmd (+Need +Symbol +Ref))
-(rel to (+Idx +String))
-(rel arg (+Idx +String))
+(rel to (+Ref +String))
+(rel arg (+String))
 (rel raw (+String))
 
 
 
 (class +Word +Entity)
 (rel value (+Key +String +Need))
-(rel log (+List +Ref +Link) NIL (+Log))
+
+(class +WordLog
+#(rel log (+List +Ref +Link) NIL (+Log))
+(rel word (+Ref +Link) NIL (+Word))
+(rel log (+Ref +Link) NIL (+Log))
+
 
 
 
