@@ -16,11 +16,11 @@
 
 (class +Word +Entity)
 (rel value (+Key +String +Need))
-
-(class +WordLog
 #(rel log (+List +Ref +Link) NIL (+Log))
-(rel word (+Ref +Link) NIL (+Word))
-(rel log (+Ref +Link) NIL (+Log))
+
+(class +WordLog +Entity)
+(rel word (+Ref +Link +Need) NIL (+Word))
+(rel log (+Ref +Link +Need) NIL (+Log))
 
 
 
@@ -52,12 +52,20 @@
                     (not (member X Junklist) ))
             (chop Word) ) ) ) )
 
-(de addword (Word Log)
+(de addwordSLOW (Word Log)
    (let (Obj (or 
                 (db 'value '+Word Word)
                 (new (db: +Word) '(+Word)
                    'value Word)))
       (put> Obj 'log Log)))  ###maybe getting too long? -- we will see
+
+(de addword (Word Log)
+   (let (Obj (or 
+                (db 'value '+Word Word)
+                (new (db: +Word) '(+Word)
+                   'value Word)))
+      (new (db: +WordLog) '(+WordLog)
+         'log Log 'word Obj)))
 
 ## Logging handler
 
@@ -144,7 +152,7 @@
 
 (de !bauch (Cmd)
    (bauch-add 
-      (nick *From) Cmd))
+      (nick *From) (format Cmd)))
 
 (de !lastbauch (Nick)
    (let Bauch (last (by (quote (X) (get X 'ts)) sort (getbauch Nick)))
@@ -356,6 +364,9 @@
      ("!dick" . !dick)
      ("!dünn" . !duenn)
      ("!analyze" . !analyze)
+     ("!heap" . heap)
+     ("!free" . (quote () (heap T)))
+     ("!gc" . gc)
      ("!wieviel?" . (quote ()
                       (pack "Ich kenne " 
                          (count (tree 'nsi '+Nsi))
@@ -388,15 +399,16 @@
    (2 (+Geek measures) (+Bauch geek))
    (0 +Log)
    (2 (+Log aid))
-   (2 (+Log nsi))
-   (2 (+Log to))
-   (3 (+Log nick))
+   (1 (+Log nsi))
+   (1 (+Log to))
+   (2 (+Log nick))
    (3 (+Log arg))
-   (2 (+Log cmd))
-   (2 (+Log date) (+Log time))
+   (1 (+Log cmd))
+   (1 (+Log date) (+Log time))
    (3 (+Log raw))
-   (1 +Word)
-   (1 (+Word log)) )
+   (0 +Word)
+   (0 +WordLog)
+   (0 (+WordLog word) (+WordLog log)) )
    
 
 (pool "picobotdb/" *Dbs)   
@@ -452,9 +464,11 @@
 (de loadall ()
    (load "irc.l" "dispatching.l" "bot.l"))
 
+#use (gc 200) before to speed things up
 (de b2logimport (File)
    (let Tkns (mapcar format (split (car (split (chop File) ".")) "-"))
       (let Date (date (cadr Tkns) (caddr Tkns) (cadddr Tkns))
          (bench (logimport File Date) 
             (commit)
             (prune) ) ) ))
+(0)
