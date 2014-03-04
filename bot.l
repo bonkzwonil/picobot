@@ -139,7 +139,7 @@
 
 (de !bauch (Cmd)
    (bauch-add 
-      (nick *From) Cmd))
+      (nick *From) (format Cmd)))
 
 (de !lastbauch (Nick)
    (let Bauch (last (by (quote (X) (get X 'ts)) sort (getbauch Nick)))
@@ -394,10 +394,6 @@
    (trace 'logging-handler)                                
    (trace 'run-irc)                 
    (trace 'telnet-send)                           
-   (trace 'intern)                        
-   (trace 'new)                   
-   (trace 'nick)                    
-   (trace 'getA)                                                         
    (trace 'db))
 
 (trace 'irc-handler)
