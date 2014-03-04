@@ -1,29 +1,34 @@
 
 ## Logging objects
+### ok: Ref is ok. Idx is WAHNSINNIG SLOW. Sn is slow. Key is ok
 (class +Log +Entity)
 (rel aid (+Key +Need +Number)) #auto inc
-(rel nick (+Idx +Need +String))
+(rel nick (+Ref +Need +String))
 (rel nsi (+Ref +String))
-(rel ts (+Need +Idx +String))
 (rel date (+Need +Ref +Number))
 (rel time (+Need +Ref +Number))
 (rel cmd (+Need +Symbol +Ref))
-(rel to (+Idx +String))
-(rel arg (+Sn +Idx +String))
+(rel to (+Ref +String))
+(rel arg (+String))
 (rel raw (+String))
 
 
 
 (class +Word +Entity)
 (rel value (+Key +String +Need))
-(rel log (+List +Ref +Link) NIL (+Log))
+#(rel log (+List +Ref +Link) NIL (+Log))
+
+(class +WordLog +Entity)
+(rel word (+Ref +Link +Need) NIL (+Word))
+(rel log (+Ref +Link +Need) NIL (+Log))
+
 
 
 
 (de dblog (Line Stamp)
    (let Msg (parse-ircmsg Line)
       (let @Log 
-         (new! '(+Log)
+         (new (db: +Log) '(+Log)
             'aid (genKey 'aid '+Log)
             'nick (nick (getA 'from Msg))
             'nsi (nsi (getA 'from Msg))
@@ -47,12 +52,20 @@
                     (not (member X Junklist) ))
             (chop Word) ) ) ) )
 
+(de addwordSLOW (Word Log)
+   (let (Obj (or 
+                (db 'value '+Word Word)
+                (new (db: +Word) '(+Word)
+                   'value Word)))
+      (put> Obj 'log Log)))  ###maybe getting too long? -- we will see
+
 (de addword (Word Log)
    (let (Obj (or 
                 (db 'value '+Word Word)
-                (new! '(+Word)
+                (new (db: +Word) '(+Word)
                    'value Word)))
-      (put> Obj 'log Log)))  ###maybe getting too long? -- we will see
+      (new (db: +WordLog) '(+WordLog)
+         'log Log 'word Obj)))
 
 ## Logging handler
 
@@ -351,6 +364,9 @@
      ("!dick" . !dick)
      ("!dünn" . !duenn)
      ("!analyze" . !analyze)
+     ("!heap" . heap)
+     ("!free" . (quote () (heap T)))
+     ("!gc" . gc)
      ("!wieviel?" . (quote ()
                       (pack "Ich kenne " 
                          (count (tree 'nsi '+Nsi))
@@ -378,14 +394,21 @@
    (getA Sym *BotConfig))
 
 (dbs
-   (1)
+   (2)
    (1 +Geek +Bauch +Nsi)
    (2 (+Geek measures) (+Bauch geek))
-   (2 +Log)
-   (3 (+Log nick nsi arg cmd date time aid))
-   (2 (+Log raw))
-   (1 +Word)
-   (2 (+Word log)))
+   (0 +Log)
+   (2 (+Log aid))
+   (1 (+Log nsi))
+   (1 (+Log to))
+   (2 (+Log nick))
+   (3 (+Log arg))
+   (1 (+Log cmd))
+   (1 (+Log date) (+Log time))
+   (3 (+Log raw))
+   (0 +Word)
+   (0 +WordLog)
+   (0 (+WordLog word) (+WordLog log)) )
    
 
 (pool "picobotdb/" *Dbs)   
@@ -401,18 +424,26 @@
 (de error-handler (Err)
    (telnet-send (pack "PRIVMSG #juelich :" Err)))
 
-(de logimport (File)
-   (in File
-      (loop
-         (NIL (line T) 'ende)
-         (let 
-            (Line @
-             Stamp (cons
-                     (strDat (car (words Line)))
-                     ($tim (cadr (words Line)))))
-         (dblog 
-            (glue " " (cddr (words Line))) 
-            Stamp ) ) ) ) )
+(de logimport (File Date)
+   (let Count 0
+      (in File
+         (loop
+            (setq Count (inc Count))
+            (NIL (line T) Count)
+            (let 
+               (Line @
+                Stamp (if Date
+                         (cons
+                            Date
+                            ($tim (car (words Line))) )
+                         (cons
+                            (strDat (car (words Line)))
+                            ($tim (cadr (words Line))) ) ) )
+               (dblog 
+                  (glue " " (if Date
+                               (cdr (words Line))
+                               (cddr (words Line)) ) )
+                  Stamp ) ) ) ) ) )
 
 (de main ()
    (run-irc 
@@ -421,3 +452,19 @@
       (getConf 'Nick)
       (getConf 'User)
       (getConf 'Pass)))
+
+(de allrawlogs ()
+   (filter '((F) (tail '(. r a w l o g) (chop F))) (dir ".")))
+
+
+(de loadall ()
+   (load "irc.l" "dispatching.l" "bot.l"))
+
+#use (gc 200) before to speed things up
+(de b2logimport (File)
+   (let Tkns (mapcar format (split (car (split (chop File) ".")) "-"))
+      (let Date (date (cadr Tkns) (caddr Tkns) (cadddr Tkns))
+         (bench (logimport File Date) 
+            (commit)
+            (prune) ) ) ))
+(0)
