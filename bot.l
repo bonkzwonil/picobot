@@ -348,6 +348,9 @@
 
 ####### WIRING
 
+(de !lieblingsnsis (Geek)
+   (pack Geek " macht am liebsten "
+      (glue "," (mapcar cadr (head 30 (lieblingsnsis Geek)))) ) )
 
 
 ## Oder halt gleich in der struktur
@@ -371,9 +374,7 @@
      ("!heap" . heap)
      ("!free" . (quote () (heap T)))
      ("!gc" . gc)
-     ("!lieblingsnsis" . (quote (Geek)
-                          (pack Geek " macht am liebsten "
-                             (glue "," (mapcar cadr (head 30 (lieblingsnsis Geek)))))))
+     ("!lieblingsnsis" . !lieblingsnsis)
      ("!wieviel?" . (quote ()
                       (pack "Ich kenne " 
                          (count (tree 'nsi '+Nsi))
