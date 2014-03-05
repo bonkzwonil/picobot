@@ -75,8 +75,7 @@
    (unless (ping? Line)
       (out "+log.txt"
          (prinl (stamp) " " Line) )
-      (dblog Line) 
-      (commit) ))
+      (dblog Line) ))
 
 ### Actionfunctions
 
@@ -420,6 +419,8 @@
      ("!deltabauch" . !deltabauch) ) )
 
 (de pong (Msg)
+   (commit)
+   (prune)
    (telnet-send (pack "PONG " (getA 'msg Msg))) )
 
 #*Handlers
