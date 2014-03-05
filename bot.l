@@ -60,12 +60,13 @@
       (put> Obj 'log Log)))  ###maybe getting too long? -- we will see
 
 (de addword (Word Log)
-   (let (Obj (or 
+   (when (and Word Log)
+      (let (Obj (or 
                 (db 'value '+Word Word)
                 (new (db: +Word) '(+Word)
                    'value Word)))
       (new (db: +WordLog) '(+WordLog)
-         'log Log 'word Obj)))
+         'log Log 'word Obj ) ) ))
 
 ## Logging handler
 
