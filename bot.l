@@ -60,12 +60,13 @@
       (put> Obj 'log Log)))  ###maybe getting too long? -- we will see
 
 (de addword (Word Log)
-   (let (Obj (or 
+   (when (and Word Log)
+      (let (Obj (or 
                 (db 'value '+Word Word)
                 (new (db: +Word) '(+Word)
                    'value Word)))
       (new (db: +WordLog) '(+WordLog)
-         'log Log 'word Obj)))
+         'log Log 'word Obj ) ) ))
 
 ## Logging handler
 
@@ -74,8 +75,7 @@
    (unless (ping? Line)
       (out "+log.txt"
          (prinl (stamp) " " Line) )
-      (dblog Line) 
-      (commit) ))
+      (dblog Line) ))
 
 ### Actionfunctions
 
@@ -287,11 +287,11 @@
       (pilog (quote
                (select (@Log)
                   ((ts +Log))
-                  (part "" @Log ts)))
+                  (part "" @Log nick)))
          (inc 'Count) ) 
       Count))
 
-(de lieblingsnsis (Geek)
+(de lieblingsnsis (Geek) #straight forward, performance??
    (reverse
       (by car sort
          (rle
@@ -303,6 +303,20 @@
                                 (= 'NICK
                                    (get X 'cmd)))
                         (collect 'nick '+Log (nick Geek)) ) ) ) ) ) ) ))
+
+(de lieblingsnsisPIL (Geek)
+   (let Lst NIL
+      (pilog (quote @Geek Geek
+                @Cmd (intern "NICK")
+               
+                (select (@Log)
+                   ((nick +Log @Geek))
+                   (same @Cmd @Log cmd)
+                   (same @Geek @Log nick) )
+                )
+         (push 'Lst (get @Log 'nsi)))
+      Lst ) )
+                
 
 (de rle (Lst)
       (make
@@ -346,6 +360,23 @@
                (T "") ) )
          "So etwas kenne ich gar nicht...")))
 
+(de cpuinfo ()
+   (let Lines NIL
+      (in "/proc/cpuinfo"
+         (loop 
+            (NIL (line T) 'done)
+            (let (Tokens (mapcar pack (mapcar trim (split (chop @) ":"))))
+               (push 'Lines Tokens))))
+      Lines))
+
+
+(de !hw ()
+   (filter (quote (X) (member (car X) '("system type" "machine" "cpu model" "BogoMIPS"))) 
+      (cpuinfo)))
+            
+      
+      
+
 ####### WIRING
 
 (de !lieblingsnsis (Geek)
@@ -388,6 +419,8 @@
      ("!deltabauch" . !deltabauch) ) )
 
 (de pong (Msg)
+   (commit)
+   (prune)
    (telnet-send (pack "PONG " (getA 'msg Msg))) )
 
 #*Handlers
@@ -462,17 +495,20 @@
       (getConf 'Pass)))
 
 (de allrawlogs ()
-   (filter '((F) (tail '(. r a w l o g) (chop F))) (dir ".")))
+   (by car sort
+      (mapcar
+         (quote (File)
+            (let Tkns (mapcar format (split (car (split (chop File) ".")) "-"))
+               (let Date (date (cadr Tkns) (caddr Tkns) (cadddr Tkns))
+                  (cons Date File) ) ) )
+         (filter '((F) (tail '(. r a w l o g) (chop F))) (dir ".")) ) ))
 
 
 (de loadall ()
    (load "irc.l" "dispatching.l" "bot.l"))
 
 #use (gc 200) before to speed things up
-(de b2logimport (File)
-   (let Tkns (mapcar format (split (car (split (chop File) ".")) "-"))
-      (let Date (date (cadr Tkns) (caddr Tkns) (cadddr Tkns))
-         (bench (logimport File Date) 
-            (commit)
-            (prune) ) ) ))
+(de b2logimport (Entry)
+         (bench (logimport (cdr Entry) (car Entry)) ))
+
 (0)
