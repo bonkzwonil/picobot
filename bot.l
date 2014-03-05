@@ -22,6 +22,13 @@
 (rel word (+Ref +Link +Need) NIL (+Word))
 (rel log (+Ref +Link +Need) NIL (+Log))
 
+(setq LogId 0)
+
+(de nextLogId ()
+   (when (= 0 LogId)
+      (setq LogId (genKey 'aid '+Log)))
+   (inc 'LogId))
+      
 
 
 
@@ -29,7 +36,7 @@
    (let Msg (parse-ircmsg Line)
       (let @Log 
          (new (db: +Log) '(+Log)
-            'aid (genKey 'aid '+Log)
+            'aid (nextLogId)
             'nick (nick (getA 'from Msg))
             'nsi (nsi (getA 'from Msg))
             'date (or (car Stamp) (date))
