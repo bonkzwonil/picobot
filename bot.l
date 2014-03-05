@@ -499,15 +499,20 @@
       (getConf 'Pass)))
 
 (de allrawlogs ()
-   (filter '((F) (tail '(. r a w l o g) (chop F))) (dir ".")))
+   (by car sort
+      (mapcar
+         (quote (File)
+            (let Tkns (mapcar format (split (car (split (chop File) ".")) "-"))
+               (let Date (date (cadr Tkns) (caddr Tkns) (cadddr Tkns))
+                  (cons Date File) ) ) )
+         (filter '((F) (tail '(. r a w l o g) (chop F))) (dir ".")) ) ))
 
 
 (de loadall ()
    (load "irc.l" "dispatching.l" "bot.l"))
 
 #use (gc 200) before to speed things up
-(de b2logimport (File)
-   (let Tkns (mapcar format (split (car (split (chop File) ".")) "-"))
-      (let Date (date (cadr Tkns) (caddr Tkns) (cadddr Tkns))
-         (bench (logimport File Date)))))
+(de b2logimport (Entry)
+         (bench (logimport (cdr Entry) (car Entry)) ))
+
 (0)
