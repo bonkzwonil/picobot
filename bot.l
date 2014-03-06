@@ -53,7 +53,7 @@
                                " " ) ) ) ) ) ) )
 
 (de wordify (Word Junklist)
-   (let Junklist (or Junklist '(" " "," "." "!" ";" ":" "?"))
+   (let Junklist (or Junklist '(" " "," "." "!" ";" ":" "?" "\"" "'"))
       (pack 
          (filter (quote (X)
                     (not (member X Junklist) ))
