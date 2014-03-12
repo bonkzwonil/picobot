@@ -413,7 +413,7 @@
      ("!lastbauch" . !lastbauch)
      ("!dick" . !dick)
      ("!dünn" . !duenn)
-     ("!analyze" . !analyze)
+     ("!analyze" . heap)
      ("!heap" . heap)
      ("!free" . (quote () (heap T)))
      ("!gc" . gc)
