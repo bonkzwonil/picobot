@@ -344,7 +344,7 @@
    (if (getnsi Krams)
       (list 'nsi @)
       (if (or
-             (> (max (length (collect 'nick '+Log Krams))
+             (> (max (count (tree 'nick '+Log Krams))
                    (length (collect 'nick '+Log (pack ":" Krams))) )
                 10 )
              (db 'nick '+Geek (nick Krams)))
@@ -395,6 +395,17 @@
    (pack Geek " macht am liebsten "
       (glue "," (mapcar cadr (head 30 (lieblingsnsis Geek)))) ) )
 
+(de !wieviel ()
+                      (pack "Ich kenne " 
+                         (count (tree 'nsi '+Nsi))
+                         " nsis, habe bisher "
+                         (count (tree 'aid '+Log))
+                         " Channelzeilen belauscht und weiß "
+                         (apply + (mapcar (quote (X) (length (get X 'measures))) (collect 'nick '+Geek)))
+                         " Bauchwerte von "
+                         (count (tree 'nick '+Geek))
+                         " verschiedenen Geeks." ) )
+   
 
 ## Oder halt gleich in der struktur
 
@@ -413,21 +424,12 @@
      ("!lastbauch" . !lastbauch)
      ("!dick" . !dick)
      ("!dünn" . !duenn)
-     ("!analyze" . !analyze)
+     ("!analyze" . heap)
      ("!heap" . heap)
      ("!free" . (quote () (heap T)))
      ("!gc" . gc)
-     ("!lieblingsnsis" . !lieblingsnsis)
-     ("!wieviel?" . (quote ()
-                      (pack "Ich kenne " 
-                         (count (tree 'nsi '+Nsi))
-                         " nsis, habe bisher "
-                         (count (tree 'aid '+Log))
-                         " Channelzeilen belauscht und weiß "
-                         (apply + (mapcar (quote (X) (length (get X 'measures))) (collect 'nick '+Geek)))
-                            " Bauchwerte von "
-                         (count (tree 'nick '+Geek))
-                         " verschiedenen Geeks." )))
+     ("!lieblingsnsis" . !lieblingsnsisPIL)
+     ("!wieviel?" . !wieviel)
      ("!deltabauch" . !deltabauch) ) )
 
 (de pong (Msg)
