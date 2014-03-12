@@ -456,7 +456,8 @@
    (3 (+Log raw))
    (0 +Word)
    (0 +WordLog)
-   (0 (+WordLog word) (+WordLog log)) )
+   (2 (+WordLog word)) 
+   (2 (+WordLog log)) )
    
 
 (pool "picobotdb/" *Dbs)   
