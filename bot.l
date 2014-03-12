@@ -140,7 +140,8 @@
 (rel geek (+Need +Joint) measures (+Geek)) 
 
 (de bauch-add (Nick Cm Stamp)
-   (new! '(+Bauch) 'ts (or Stamp (stamp)) 'cm Cm 'geek (db 'nick '+Geek Nick)))
+   (unless (findbauch Nick Stamp)
+      (new! '(+Bauch) 'ts (or Stamp (stamp)) 'cm Cm 'geek (db 'nick '+Geek Nick)) ))
 
 (de bauch-convert (Lst)
    (let (Geek (car Lst))
@@ -200,6 +201,10 @@
    (get (db 'nick '+Geek (nick Nick))
             'measures ) )
                
+(de findbauch (Nick Stamp)
+   (find (quote (X)
+            (= (get X 'ts) Stamp))
+      (getbauch Nick) ) )
 
 # I like PLISTS
 (de getf (X Place)
