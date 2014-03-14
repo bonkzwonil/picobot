@@ -316,8 +316,17 @@
                                    (get X 'cmd)))
                         (collect 'nick '+Log (nick Geek)) ) ) ) ) ) ) ))
 
+(de incpush (Lst Token)
+   (let Idx Lst
+      (let V (lup Idx Token)
+         (if (not V)
+            (idx 'Idx (cons Token 1) T)
+            (prog1 
+               (idx 'Idx V NIL) #raus
+               (idx 'Idx (cons Token (inc (cdr V))))))))) #rein
+         
 (de lieblingsnsisPIL (Geek)
-   (let Lst NIL
+   (let Lst 0
       (pilog (quote @Geek Geek
                 @Cmd (intern "NICK")
                
@@ -326,8 +335,38 @@
                    (same @Cmd @Log cmd)
                    (same @Geek @Log nick) )
                 )
-         (push 'Lst (get @Log 'nsi)))
+         (inc 'Lst) )
       Lst ) )
+
+(de logsWithWord (Word)
+   (let Lst NIL
+         
+      (pilog (quote @Word (db 'value '+Word Word)
+                (select (@WordLog @Aid)
+                   ((word +WordLog @Word))
+                   (same @Word @WordLog word)
+                   (val @Aid @WordLog log aid)))
+         (idx 'Lst @Aid T) )
+      (idx 'Lst) ) )
+
+(de countWordPIL (Word)
+   (let Cnt 0
+      (pilog (quote @Word (db 'value '+Word Word)
+                (select (@WordLog)
+                   ((word +WordLog @Word))
+                   (same @Word @WordLog word)))
+         (inc 'Cnt ))
+      Cnt ))    
+
+(de countWord (Word)
+   (let Cnt 0
+      (let W (db 'value '+Word Word)
+         (iter (tree 'word '+WordLog)
+            (quote (X)
+               (inc 'Cnt))
+            (cons W)
+            (cons W T)))
+      Cnt ) )
                 
 
 (de rle (Lst)
@@ -425,6 +464,7 @@
      ("!dick" . !dick)
      ("!dünn" . !duenn)
      ("!analyze" . heap)
+     ("!wieoft" . countword)
      ("!heap" . heap)
      ("!free" . (quote () (heap T)))
      ("!gc" . gc)
