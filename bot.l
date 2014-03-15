@@ -307,13 +307,13 @@
          
 (de lieblingsnsis (Geek Days)
    (let (Lst Nil
-         Days (or Days 10))
+         Days (or Days 3))
          
       (pilog (quote @Geek Geek
                 @Cmd (intern "NICK")
                 @Date (cons (- (date) Days) (date))
                 (select (@Log @Nsi)
-                   ((nick +Log @Geek))
+                   ((date +Log @Date))
                    (range @Date @Log date)
                    (same @Cmd @Log cmd)
                    (same @Geek @Log nick) 
