@@ -305,7 +305,7 @@
                         (collect 'nick '+Log (nick Geek)) ) ) ) ) ) ) ))
 
          
-(de lieblingsNsis (Geek Days)
+(de lieblingsnsis (Geek Days)
    (let (Lst Nil
          Days (or Days 10))
          
@@ -370,16 +370,16 @@
    (if (getnsi Krams)
       (list 'nsi @)
       (if (or
+             (db 'nick '+Geek (nick Krams))
              (> (max (count (tree 'nick '+Log Krams))
                    (length (collect 'nick '+Log (pack ":" Krams))) )
-                10 )
-             (db 'nick '+Geek (nick Krams)))
-         (let (nsis (lieblingsnsis (nick Krams)))
+                10 ))
+         (let (nsis (lieblingsnsis (nick Krams) 7))
             (if (> (length nsis) 3)
                (list 'geek nsis)
                (list 'bot) ))
          (if (db 'value '+Word Krams)
-            (list 'wort (collect 'word '+WordLog @))
+            (list 'wort (countWord Krams))
             NIL ) ) ) )
 
 (de !analyze (Krams)
@@ -390,7 +390,7 @@
                ((= 'wort (car Res)) (pack "Es kommt vor in " (length (cadr Res)) " Channelzeilen."))
                ((= 'nsi (car Res)) (pack "Er bedeutet soviel wie: " (cadr Res)))
                ((= 'geek (car Res)) (let nsis (cadr Res)
-                                       (pack "Am liebsten macht " (nick Krams) " "
+                                       (pack "Am liebsten macht " (nick Krams) " zur Zeit "
                                           (cadar nsis) " (" (caar nsis) "x) und " 
                                           (cadar (cdr nsis)) " (" (caar (cdr nsis)) "x)...")))
                       
