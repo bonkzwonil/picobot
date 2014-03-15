@@ -286,24 +286,12 @@
 
 
 (de wievielwords? ()
-   (let Count 0
-      (pilog (quote
-               (select (@Word)
-                  ((value +Word))
-                  (part "" @Word value)))
-         (inc 'Count) ) 
-      Count))
+   (count (tree 'value '+Word)))
 
 (de wieviellogs? ()
-   (let Count 0
-      (pilog (quote
-               (select (@Log)
-                  ((ts +Log))
-                  (part "" @Log nick)))
-         (inc 'Count) ) 
-      Count))
+   (count (tree 'aid '+Log)) )
 
-(de lieblingsnsis (Geek) #straight forward, performance??
+(de lieblingsnsisSlow (Geek) #straight forward, performance??
    (reverse
       (by car sort
          (rle
@@ -316,27 +304,26 @@
                                    (get X 'cmd)))
                         (collect 'nick '+Log (nick Geek)) ) ) ) ) ) ) ))
 
-(de incpush (Lst Token)
-   (let Idx Lst
-      (let V (lup Idx Token)
-         (if (not V)
-            (idx 'Idx (cons Token 1) T)
-            (prog1 
-               (idx 'Idx V NIL) #raus
-               (idx 'Idx (cons Token (inc (cdr V))))))))) #rein
          
-(de lieblingsnsisPIL (Geek)
-   (let Lst 0
+(de lieblingsnsis (Geek Days)
+   (let (Lst Nil
+         Days (or Days 10))
+         
       (pilog (quote @Geek Geek
                 @Cmd (intern "NICK")
-               
-                (select (@Log)
+                @Date (cons (- (date) Days) (date))
+                (select (@Log @Nsi)
                    ((nick +Log @Geek))
+                   (range @Date @Log date)
                    (same @Cmd @Log cmd)
-                   (same @Geek @Log nick) )
+                   (same @Geek @Log nick) 
+                   (val @Nsi @Log nsi))
                 )
-         (inc 'Lst) )
-      Lst ) )
+         (push 'Lst @Nsi ))
+      (reverse
+         (by car sort
+            (rle (sort Lst ) )))))
+   
 
 (de logsWithWord (Word)
    (let Lst NIL
@@ -349,7 +336,7 @@
          (idx 'Lst @Aid T) )
       (idx 'Lst) ) )
 
-(de countWordPIL (Word)
+(de countWordPIL (Word) ##too slow
    (let Cnt 0
       (pilog (quote @Word (db 'value '+Word Word)
                 (select (@WordLog)
@@ -358,7 +345,7 @@
          (inc 'Cnt ))
       Cnt ))    
 
-(de countWord (Word)
+(de countWord (Word) ##FAST!
    (let Cnt 0
       (let W (db 'value '+Word Word)
          (iter (tree 'word '+WordLog)
@@ -383,16 +370,16 @@
    (if (getnsi Krams)
       (list 'nsi @)
       (if (or
+             (db 'nick '+Geek (nick Krams))
              (> (max (count (tree 'nick '+Log Krams))
                    (length (collect 'nick '+Log (pack ":" Krams))) )
-                10 )
-             (db 'nick '+Geek (nick Krams)))
-         (let (nsis (lieblingsnsis (nick Krams)))
+                10 ))
+         (let (nsis (lieblingsnsis (nick Krams) 7))
             (if (> (length nsis) 3)
                (list 'geek nsis)
                (list 'bot) ))
          (if (db 'value '+Word Krams)
-            (list 'wort (collect 'word '+WordLog @))
+            (list 'wort (countWord Krams))
             NIL ) ) ) )
 
 (de !analyze (Krams)
@@ -403,7 +390,7 @@
                ((= 'wort (car Res)) (pack "Es kommt vor in " (length (cadr Res)) " Channelzeilen."))
                ((= 'nsi (car Res)) (pack "Er bedeutet soviel wie: " (cadr Res)))
                ((= 'geek (car Res)) (let nsis (cadr Res)
-                                       (pack "Am liebsten macht " (nick Krams) " "
+                                       (pack "Am liebsten macht " (nick Krams) " zur Zeit "
                                           (cadar nsis) " (" (caar nsis) "x) und " 
                                           (cadar (cdr nsis)) " (" (caar (cdr nsis)) "x)...")))
                       
@@ -463,13 +450,13 @@
      ("!lastbauch" . !lastbauch)
      ("!dick" . !dick)
      ("!dünn" . !duenn)
-     ("!analyze" . heap)
+     ("!analyze" . !analyze)
      ("!wieoft" . countword)
      ("!heap" . heap)
      ("!free" . (quote () (heap T)))
      ("!gc" . gc)
-     ("!lieblingsnsis" . !lieblingsnsisPIL)
-     ("!wieviel?" . !wieviel)
+     ("!lieblingsnsis" . !lieblingsnsis)
+     ("!wieviel" . !wieviel)
      ("!deltabauch" . !deltabauch) ) )
 
 (de pong (Msg)
