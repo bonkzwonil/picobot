@@ -417,9 +417,9 @@
 
 ####### WIRING
 
-(de !lieblingsnsis (Geek)
+(de !lieblingsnsis (Geek Days)
    (pack Geek " macht am liebsten "
-      (glue "," (mapcar cadr (head 30 (lieblingsnsis Geek)))) ) )
+      (glue "," (mapcar cadr (head 30 (lieblingsnsis Geek (min (or Days 5) 90))) ) )))
 
 (de !wieviel ()
                       (pack "Ich kenne " 
