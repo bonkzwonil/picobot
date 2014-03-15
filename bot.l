@@ -286,24 +286,12 @@
 
 
 (de wievielwords? ()
-   (let Count 0
-      (pilog (quote
-               (select (@Word)
-                  ((value +Word))
-                  (part "" @Word value)))
-         (inc 'Count) ) 
-      Count))
+   (count (tree 'value '+Word)))
 
 (de wieviellogs? ()
-   (let Count 0
-      (pilog (quote
-               (select (@Log)
-                  ((ts +Log))
-                  (part "" @Log nick)))
-         (inc 'Count) ) 
-      Count))
+   (count (tree 'aid '+Log)) )
 
-(de lieblingsnsis (Geek) #straight forward, performance??
+(de lieblingsnsisSlow (Geek) #straight forward, performance??
    (reverse
       (by car sort
          (rle
@@ -316,27 +304,26 @@
                                    (get X 'cmd)))
                         (collect 'nick '+Log (nick Geek)) ) ) ) ) ) ) ))
 
-(de incpush (Lst Token)
-   (let Idx Lst
-      (let V (lup Idx Token)
-         (if (not V)
-            (idx 'Idx (cons Token 1) T)
-            (prog1 
-               (idx 'Idx V NIL) #raus
-               (idx 'Idx (cons Token (inc (cdr V))))))))) #rein
          
-(de lieblingsnsisPIL (Geek)
-   (let Lst 0
+(de lieblingsNsis (Geek Days)
+   (let (Lst Nil
+         Days (or Days 10))
+         
       (pilog (quote @Geek Geek
                 @Cmd (intern "NICK")
-               
-                (select (@Log)
+                @Date (cons (- (date) Days) (date))
+                (select (@Log @Nsi)
                    ((nick +Log @Geek))
+                   (range @Date @Log date)
                    (same @Cmd @Log cmd)
-                   (same @Geek @Log nick) )
+                   (same @Geek @Log nick) 
+                   (val @Nsi @Log nsi))
                 )
-         (inc 'Lst) )
-      Lst ) )
+         (push 'Lst @Nsi ))
+      (reverse
+         (by car sort
+            (rle (sort Lst ) )))))
+   
 
 (de logsWithWord (Word)
    (let Lst NIL
@@ -349,7 +336,7 @@
          (idx 'Lst @Aid T) )
       (idx 'Lst) ) )
 
-(de countWordPIL (Word)
+(de countWordPIL (Word) ##too slow
    (let Cnt 0
       (pilog (quote @Word (db 'value '+Word Word)
                 (select (@WordLog)
@@ -358,7 +345,7 @@
          (inc 'Cnt ))
       Cnt ))    
 
-(de countWord (Word)
+(de countWord (Word) ##FAST!
    (let Cnt 0
       (let W (db 'value '+Word Word)
          (iter (tree 'word '+WordLog)
