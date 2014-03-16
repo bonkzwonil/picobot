@@ -31,8 +31,11 @@ map
 '
 nth
 set
+in
 
 (action !lenOfFirstWord (arg) (length (nth 0 (words arg))
+
+(action !mypasswd () (in "/etc/passwd"))
 
 
 IMPLEMENTATIONS    

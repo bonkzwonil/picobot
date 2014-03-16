@@ -354,7 +354,21 @@
             (cons W)
             (cons W T)))
       Cnt ) )
-                
+
+(de lastLogWithWord (Word)
+   (let W (db 'value '+Word Word)
+      (when W
+         (get
+            (step (init (tree 'word '+WordLog) (cons W T) (cons W)))
+            'log))))
+
+(de !heard (Word)
+   (let L (lastLogWithWord Word)
+      (if L
+         (pack Word " wurde zuletzt vor " (- (date) (get L 'date)) " Tagen von " (get L 'nick) " gesagt: '" (get L 'arg) "'")
+         (pack Word " wurde doch noch nie gesagt?!"))))
+            
+      
 
 (de rle (Lst)
       (make
@@ -417,9 +431,9 @@
 
 ####### WIRING
 
-(de !lieblingsnsis (Geek)
+(de !lieblingsnsis (Geek Days)
    (pack Geek " macht am liebsten "
-      (glue "," (mapcar cadr (head 30 (lieblingsnsis Geek)))) ) )
+      (glue "," (mapcar cadr (head 30 (lieblingsnsis Geek (min (or Days 5) 90))) ) )))
 
 (de !wieviel ()
                       (pack "Ich kenne " 
@@ -451,6 +465,7 @@
      ("!dick" . !dick)
      ("!dünn" . !duenn)
      ("!analyze" . !analyze)
+     ("!heard" . !heard)
      ("!wieoft" . countword)
      ("!heap" . heap)
      ("!free" . (quote () (heap T)))
