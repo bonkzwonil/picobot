@@ -362,6 +362,17 @@
             (step (init (tree 'word '+WordLog) (cons W T) (cons W)))
             'log))))
 
+(de lastLogWithWord (Word)
+   (let W (db 'value '+Word Word)
+      (when W
+         (let (Q (init (tree 'aid '+Log) T 0)
+               R)
+            (loop
+               (T (= (get (setq R (db 'log '+WordLog (step Q))) 'word) W) (get R 'log)))))))
+              
+               
+
+
 (de !heard (Word)
    (let L (lastLogWithWord Word)
       (if L
