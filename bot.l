@@ -354,11 +354,7 @@
 (de lastLogWithWord (Word)
    (let W (db 'value '+Word Word)
       (when W
-         (let (Q (init (tree 'aid '+WordLog) T)
-               R)
-            (loop
-               (T (= W (get (setq R (step Q)) 'word)) R))))))
-
+         (get W 'lastLog))))
                
               
 
