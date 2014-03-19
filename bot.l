@@ -19,6 +19,7 @@
 #(rel log (+List +Ref +Link) NIL (+Log))
 
 (class +WordLog +Entity)
+(rel aid (+Key +Number))
 (rel word (+Ref +Link +Need) NIL (+Word))
 (rel log (+Ref +Link +Need) NIL (+Log))
 
@@ -73,7 +74,7 @@
                 (new (db: +Word) '(+Word)
                    'value Word)))
       (new (db: +WordLog) '(+WordLog)
-         'log Log 'word Obj ) ) ))
+         'aid (genKey 'aid '+Word) 'log Log 'word Obj ) ) ))
 
 ## Logging handler
 
@@ -529,7 +530,8 @@
    (3 (+Log raw))
    (0 +Word)
    (0 +WordLog)
-   (0 (+WordLog word) (+WordLog log)) )
+   (0 (+WordLog word) (+WordLog log))
+   (0 (+WordLog aid)))
    
 
 (pool "picobotdb/" *Dbs)   
