@@ -16,6 +16,7 @@
 
 (class +Word +Entity)
 (rel value (+Key +String +Need))
+(rel lastLog (+Ref +Link) NIL (+Log))
 #(rel log (+List +Ref +Link) NIL (+Log))
 
 (class +WordLog +Entity)
@@ -74,7 +75,8 @@
                 (new (db: +Word) '(+Word)
                    'value Word)))
       (new (db: +WordLog) '(+WordLog)
-         'aid (genKey 'aid '+Word) 'log Log 'word Obj ) ) ))
+         'aid (genKey 'aid '+Word) 'log Log 'word Obj )
+      (put> Word 'lastLog Log) ) ))
 
 ## Logging handler
 
@@ -359,31 +361,11 @@
 (de lastLogWithWord (Word)
    (let W (db 'value '+Word Word)
       (when W
-         (get
-            (step (init (tree 'word '+WordLog) (cons W T) (cons W)))
-            'log))))
-
-(de lastLogWithWord (Word)
-   (let W (db 'value '+Word Word)
-      (when W
-         (let (Q (init (tree 'aid '+Log) T 0)
+         (let (Q (init (tree 'aid '+WordLog) T)
                R)
             (loop
-               (T (= (get (setq R (db 'log '+WordLog (step Q))) 'word) W) (get R 'log)))))))
+               (T (= W (get (setq R (step Q)) 'word)) R))))))
 
-(de lastLogWithWord (Word)
-   (let (W (db 'value '+Word Word)
-         Best NIL
-         Count 0)
-      (when W
-         (let (Q (init (tree 'word '+WordLog) (cons W T) (cons W))
-               R)
-            (while (step Q)
-               (let L (get @ 'log)
-                  (setq Best (max Best L))
-                  (inc 'Count)))))
-      (prinl Count)
-      Best))
                
               
 
