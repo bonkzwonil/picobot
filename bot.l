@@ -369,9 +369,22 @@
                R)
             (loop
                (T (= (get (setq R (db 'log '+WordLog (step Q))) 'word) W) (get R 'log)))))))
-              
-               
 
+(de lastLogWithWord (Word)
+   (let (W (db 'value '+Word Word)
+         Best NIL
+         Count 0)
+      (when W
+         (let (Q (init (tree 'word '+WordLog) (cons W T) (cons W))
+               R)
+            (while (step Q)
+               (let L (get @ 'log)
+                  (setq Best (max Best L))
+                  (inc 'Count)))))
+      (prinl Count)
+      Best))
+               
+              
 
 (de !heard (Word)
    (let L (lastLogWithWord Word)
