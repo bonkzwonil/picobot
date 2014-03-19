@@ -16,9 +16,11 @@
 
 (class +Word +Entity)
 (rel value (+Key +String +Need))
+(rel lastLog (+Ref +Link) NIL (+Log))
 #(rel log (+List +Ref +Link) NIL (+Log))
 
 (class +WordLog +Entity)
+(rel aid (+Key +Number))
 (rel word (+Ref +Link +Need) NIL (+Word))
 (rel log (+Ref +Link +Need) NIL (+Log))
 
@@ -59,13 +61,6 @@
                     (not (member X Junklist) ))
             (chop Word) ) ) ) )
 
-(de addwordSLOW (Word Log)
-   (let (Obj (or 
-                (db 'value '+Word Word)
-                (new (db: +Word) '(+Word)
-                   'value Word)))
-      (put> Obj 'log Log)))  ###maybe getting too long? -- we will see
-
 (de addword (Word Log)
    (when (and Word Log)
       (let (Obj (or 
@@ -73,7 +68,8 @@
                 (new (db: +Word) '(+Word)
                    'value Word)))
       (new (db: +WordLog) '(+WordLog)
-         'log Log 'word Obj ) ) ))
+         'aid (genKey 'aid '+Word) 'log Log 'word Obj )
+      (put> Word 'lastLog Log) ) ))
 
 ## Logging handler
 
@@ -358,31 +354,11 @@
 (de lastLogWithWord (Word)
    (let W (db 'value '+Word Word)
       (when W
-         (get
-            (step (init (tree 'word '+WordLog) (cons W T) (cons W)))
-            'log))))
-
-(de lastLogWithWord (Word)
-   (let W (db 'value '+Word Word)
-      (when W
-         (let (Q (init (tree 'aid '+Log) T 0)
+         (let (Q (init (tree 'aid '+WordLog) T)
                R)
             (loop
-               (T (= (get (setq R (db 'log '+WordLog (step Q))) 'word) W) (get R 'log)))))))
+               (T (= W (get (setq R (step Q)) 'word)) R))))))
 
-(de lastLogWithWord (Word)
-   (let (W (db 'value '+Word Word)
-         Best NIL
-         Count 0)
-      (when W
-         (let (Q (init (tree 'word '+WordLog) (cons W T) (cons W))
-               R)
-            (while (step Q)
-               (let L (get @ 'log)
-                  (setq Best (max Best L))
-                  (inc 'Count)))))
-      (prinl Count)
-      Best))
                
               
 
@@ -530,7 +506,8 @@
    (0 +Word)
    (0 +WordLog)
    (2 (+WordLog word)) 
-   (2 (+WordLog log)) )
+   (2 (+WordLog log)) 
+   (0 (+WordLog aid)))
    
 
 (pool "picobotdb/" *Dbs)   
