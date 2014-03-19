@@ -61,13 +61,6 @@
                     (not (member X Junklist) ))
             (chop Word) ) ) ) )
 
-(de addwordSLOW (Word Log)
-   (let (Obj (or 
-                (db 'value '+Word Word)
-                (new (db: +Word) '(+Word)
-                   'value Word)))
-      (put> Obj 'log Log)))  ###maybe getting too long? -- we will see
-
 (de addword (Word Log)
    (when (and Word Log)
       (let (Obj (or 
