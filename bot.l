@@ -69,7 +69,7 @@
                    'value Word)))
       (new (db: +WordLog) '(+WordLog)
          'aid (genKey 'aid '+Word) 'log Log 'word Obj )
-      (put> Word 'lastLog Log) ) ))
+      (put> Obj 'lastLog Log) ) ))
 
 ## Logging handler
 
@@ -78,7 +78,8 @@
    (unless (ping? Line)
       (out "+log.txt"
          (prinl (stamp) " " Line) )
-      (dblog Line) ))
+      (dblog Line) 
+      (commit)))
 
 ### Actionfunctions
 
@@ -462,7 +463,7 @@
      ("!dünn" . !duenn)
      ("!analyze" . !analyze)
      ("!heard" . !heard)
-     ("!wieoft" . countword)
+     ("!wieoft" . countWord)
      ("!heap" . heap)
      ("!free" . (quote () (heap T)))
      ("!gc" . gc)
