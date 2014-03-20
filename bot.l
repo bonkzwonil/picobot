@@ -374,7 +374,7 @@
 (de !heard (Word)
    (let L (lastLogWithWord Word)
       (if L
-         (pack Word " wurde zuletzt vor " (- (date) (get L 'date)) " Tagen von " (get L 'nick) " gesagt: '" (get L 'arg) "'")
+         (pack Word " wurde zuletzt vor " (-vor (get L 'date) (get L 'time)) " von " (get L 'nick) " gesagt: '" (get L 'arg) "'")
          (pack Word " wurde doch noch nie gesagt?!"))))
             
       
