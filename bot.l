@@ -357,7 +357,19 @@
       (when W
          (get W 'lastLog))))
                
-              
+
+(de -vor (Date Time)
+   (let (Days (- (date) Date)
+         Seconds (- (time) Time))
+      (if (= 0 Days)
+         (let (Hours (/ Seconds 60 60))
+            (if (= 0 Hours)
+               (let (Minutes (/ Seconds 60))
+                  (if (= 0 Minutes)
+                     (pack Seconds (if (> 2 Seconds) " Sekunde" " Sekunden"))
+                     (pack Minutes (if (> 2 Minutes) " Minute" " Minuten"))))
+               (pack Hours (if (> 2 Hours) " Stunde" " Stunden"))))
+         (pack Days (if (> 2 Days) " Tag" " Tagen") ) ) ))
 
 (de !heard (Word)
    (let L (lastLogWithWord Word)
@@ -437,7 +449,7 @@
                          (count (tree 'nsi '+Nsi))
                          " nsis, habe bisher "
                          (count (tree 'aid '+Log))
-                         " Channelzeilen belauscht und weiß "
+                         " Channelzeilen belauscht, in denen " (count (tree 'value '+Word)) " verschiedene Wörter vorkommen und weiß "
                          (apply + (mapcar (quote (X) (length (get X 'measures))) (collect 'nick '+Geek)))
                          " Bauchwerte von "
                          (count (tree 'nick '+Geek))
