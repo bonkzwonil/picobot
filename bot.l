@@ -244,9 +244,22 @@
 (de getnsi (Nsi)
     (get (db 'nsi '+Nsi Nsi) 'description))
 
+(de removeEndNumbers (Word)
+   (let Chars (reverse (chop Word))
+      (pack (reverse
+               (removeUntil Chars '((X) (not (num? (format X)))) ) ))))
+
+(de removeUntil (List Pred)
+   (when List
+      (if (Pred (car List))
+         List
+         (removeUntil (cdr List) Pred) )))
+      
+         
+   
 
 (de nick-hook (Msg)
-   (let Nsi (nsi (getA 'to Msg))
+   (let Nsi (removeEndNumbers (nsi (getA 'to Msg)))
       (when (and 
                (> (length Nsi) 1) 
                (< (length Nsi) 5)
