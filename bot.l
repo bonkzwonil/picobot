@@ -160,6 +160,10 @@
    (bauch-add 
       (nick *From) (format Cmd)))
 
+(de !unbauch ()
+   (put> (db 'nick '+Geek (nick *From)) 'measures
+      (head -1 (getbauch (nick *From)))))
+
 (de !lastbauch (Nick)
    (let Bauch (last (by (quote (X) (get X 'ts)) sort (getbauch Nick)))
       (if Bauch
@@ -483,6 +487,7 @@
      ("!regnsi" . newnsi)
      ("!suchnsi" . !suchnsi)
      ("!bauch" . !bauch) 
+     ("!unbauch" . !unbauch)
      ("!lastbauch" . !lastbauch)
      ("!dick" . !dick)
      ("!dünn" . !duenn)
