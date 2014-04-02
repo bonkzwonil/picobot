@@ -161,8 +161,9 @@
       (nick *From) (format Cmd)))
 
 (de !unbauch ()
-   (put> (db 'nick '+Geek (nick *From)) 'measures
-      (head -1 (getbauch (nick *From)))))
+   (put!> (db 'nick '+Geek (nick *From)) 'measures
+      (head -1 (getbauch (nick *From))))
+   (commit 'upd))
 
 (de !lastbauch (Nick)
    (let Bauch (last (by (quote (X) (get X 'ts)) sort (getbauch Nick)))
