@@ -3,7 +3,7 @@
 ### ok: Ref is ok. Idx is WAHNSINNIG SLOW. Sn is slow. Key is ok
 (class +Log +Entity)
 (rel aid (+Key +Need +Number)) #auto inc
-(rel nick (+Ref +Need +String))
+(rel nick (+Aux +Ref +String) (aid))
 (rel nsi (+Ref +String))
 (rel date (+Need +Ref +Number))
 (rel time (+Need +Ref +Number))
@@ -374,6 +374,18 @@
    (let W (db 'value '+Word Word)
       (when W
          (get W 'lastLog))))
+
+(de lastLogFromNick (Nick)
+   (step (init (tree 'nick '+Log) (cons Nick  T) (cons Nick))))
+
+(de !seen (Nick)
+   (let Last (lastLogFromNick (nick Nick))
+      (pack (nick Nick) 
+         " war zuletzt vor "
+         (-vor (get Last 'date) (get Last 'time))
+         " hier: "
+         (get Last 'arg))))
+         
                
 
 (de -vor (Date Time)
@@ -416,7 +428,7 @@
                    (length (collect 'nick '+Log (pack ":" Krams))) )
                 10 ))
          (let (nsis (lieblingsnsis (nick Krams) 7))
-            (if (> (length nsis) 3)
+            (if (> (length nsis) 0)
                (list 'geek nsis)
                (list 'bot) ))
          (if (db 'value '+Word Krams)
@@ -513,7 +525,7 @@
                   (telnet-send "JOIN #juelich")))
   (`(fcmd= "PING") . pong)
    
-  (`(fcmd= "NICK") . nick-hook)))
+  (`(fcmd= "NICK") . nick-hook) ) )
   
 (de getConf (Sym)
    (getA Sym *BotConfig))
