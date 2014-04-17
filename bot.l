@@ -506,6 +506,7 @@
      ("!dünn" . !duenn)
      ("!analyze" . !analyze)
      ("!heard" . !heard)
+     ("!seen" . !seen)
      ("!wieoft" . countWord)
      ("!heap" . heap)
      ("!free" . (quote () (heap T)))
