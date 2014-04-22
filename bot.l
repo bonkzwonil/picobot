@@ -378,14 +378,20 @@
 (de lastLogFromNick (Nick)
    (step (init (tree 'nick '+Log) (cons Nick  T) (cons Nick))))
 
+
 (de !seen (Nick)
    (let Last (lastLogFromNick (nick Nick))
       (pack (nick Nick) 
          " war zuletzt vor "
          (-vor (get Last 'date) (get Last 'time))
          " hier: "
-         (get Last 'arg))))
-         
+         (cond 
+            ((= (get Last 'cmd) 'PRIVMSG)
+             (get Last 'arg))
+            ((= (get Last 'cmd) 'NICK)
+             (pack "NSI wurde auf "
+                (nsi (get Last 'to))
+                "gesetzt"))))))
                
 
 (de -vor (Date Time)
