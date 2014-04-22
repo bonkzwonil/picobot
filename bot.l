@@ -391,7 +391,7 @@
             ((= (get Last 'cmd) 'NICK)
              (pack "NSI wurde auf "
                 (nsi (get Last 'to))
-                "gesetzt"))))))
+                " gesetzt"))))))
                
 
 (de -vor (Date Time)
